@@ -14,23 +14,27 @@
     <meta http-equiv='expires' content='0' />
     <meta property='og:title' content='Card Generator' />
 
-    <link rel='stylesheet' href='styles/style.css'>
+    <link rel='stylesheet' href='styles/card-style.css'>
 </head>
 
 <body id='body'>
+    <h1>Card Generator</h1>
+    <div><button onclick='removeCardsFromStorage()'>Clear Saved Cards</button></div>
     <div>
-        <label for='name'>Name:</label>
-        <input type='text' name='name' id='name'>
+        <label>Title:</label>
+        <input type='text' id='name'>
         <br>
         <label for='content'>Content:</label>
-        <input type='text' name='content' id='content'>
+        <input type='text' id='content'>
         <br>
         <input type='button' onclick='generateCard()' value='Generate Card'>
     </div>
-    <div id='cards'></div>
+    <div id='cards'>
+        <p id='placeholder'>Cards go here.</p>
+    </div>
 
     <script src='scripts/domUtility.js'></script>
-    <script src='scripts/script.js'></script>
+    <script src='scripts/card-script.js'></script>
 </body>
 
 </html>
