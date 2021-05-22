@@ -13,17 +13,23 @@
     <meta http-equiv='cache-control' content='no-cache' />
     <meta http-equiv='expires' content='0' />
     <meta property='og:title' content='Card Generator' />
-    <!-- <meta property='og:image' content='images/apple-touch-icon.png' /> -->
-
 
     <link rel='stylesheet' href='styles/style.css'>
-    <!-- <link rel='apple-touch-icon' sizes='150x150' href='images/apple-touch-icon.png'> -->
-    <!-- <link rel='icon' sizes='192x192' href='images/andriod-touch-icon.png'> -->
 </head>
 
 <body id='body'>
-    <div id='content'></div>
+    <div>
+        <label for='name'>Name:</label>
+        <input type='text' name='name' id='name'>
+        <br>
+        <label for='content'>Content:</label>
+        <input type='text' name='content' id='content'>
+        <br>
+        <input type='button' onclick='generateCard()' value='Generate Card'>
+    </div>
+    <div id='cards'></div>
 
+    <script src='scripts/domUtility.js'></script>
     <script src='scripts/script.js'></script>
 </body>
 

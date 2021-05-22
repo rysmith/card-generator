@@ -1,3 +1,39 @@
-#content {
+#cards {
     border: 1px solid green;
+    min-height: 100px;
+}
+
+.card {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 10px;
+    position: relative;
+    max-width: 300px;
+}
+
+.title {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px 20px 5px 5px;
+}
+
+.artwork {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px 20px 5px 5px;
+}
+
+.content {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px 20px 5px 5px;
+}
+
+.remove {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
+    border: 2px solid red;
+    color: red;
 }
