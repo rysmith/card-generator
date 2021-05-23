@@ -7,7 +7,7 @@ Create playing cards for your next super sweet game.  Can be found at [http://r4
 - Data persists in your browser's `localStorage`
 
 ## Random Images
-via [https://picsum.photos](picsum.photos)
+via [picsum.photos](https://picsum.photos)
 
 ## Icons
-via [https://fontawesome.com/](Font Awesome)
+via [Font Awesome](https://fontawesome.com)
