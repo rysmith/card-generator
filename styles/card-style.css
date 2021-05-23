@@ -43,54 +43,65 @@ h1 {
 }
 
 .card {
-    border: 1px solid black;
+    border: 1px solid darkslategray;
     padding: 5px;
     margin: 20px;
     position: relative;
     max-width: 300px;
     display: inline-block;
+    border-radius: 5px;
+    background-color: lightgray;
 }
 
 .title {
-    border: 1px solid black;
+    border: 1px solid darkslategray;
     padding: 5px;
-    margin: 5px 20px 5px 5px;
+    margin: 5px;
     position: relative;
+    border-radius: 5px;
+    background-color: white;
+    width: 200px;
 }
 
 .not_saved {
     position: absolute;
     top: -20px;
-    right: 0;
+    left: 0;
     color: red;
 }
 
 .saved {
     position: absolute;
     top: -20px;
-    right: 0;
+    left: 0;
     color: green;
 }
 
 .artwork {
-    border: 1px solid black;
-    padding: 5px;
-    margin: 5px 20px 5px 5px;
+    border: 5px solid darkslategray;
+    margin: 5px;
     width: 200px;
+    height: 200px;
+    border-radius: 5px;
 }
 
 .content {
-    border: 1px solid black;
+    border: 1px solid darkslategray;
     padding: 5px;
-    margin: 5px 20px 5px 5px;
-    min-height: 100px;
+    margin: 5px;
+    height: 100px;
+    border-radius: 5px;
+    background-color: white;
+    width: 200px;
+    font-size: 12px;
 }
 
 .remove {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: -4px;
+    right: -4px;
     cursor: pointer;
-    border: 2px solid red;
     color: red;
+    background-color: white;
+    border-radius: 10px;
 }

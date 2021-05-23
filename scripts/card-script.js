@@ -27,8 +27,6 @@ function addPlaceholder() {
 function removePlaceholder() {
     var placeholder = document.getElementById('placeholder');
     if (placeholder) {
-        console.log(placeholder, 'here')
-
         placeholder.remove();
     }
 }
@@ -71,6 +69,42 @@ function updateCardInStorage(cardId, field, newValue) {
     localStorage.setItem('card-storage', JSON.stringify(updatedCards));
 }
 
+function handleNotSavedDisplay() {
+    var card = this.parentNode
+    var existingStatus = card.getElementsByClassName('not_saved');
+
+    Array.from(existingStatus).forEach(status => status.remove());
+
+    var saveStatus = domUtility.buildNode('div', 'Not Saved', [
+        { key: 'class', value: 'not_saved' }
+    ]);
+
+    card.appendChild(saveStatus)
+}
+
+function handleCardSave(fieldName) {
+    var card = this.parentNode;
+    var value = this.innerHTML;
+
+    updateCardInStorage(card.id, fieldName, value)
+
+    var existingStatus = card.getElementsByClassName('not_saved');
+
+    Array.from(existingStatus).forEach(status => status.remove());
+
+    var saveStatus = domUtility.buildNode('div', 'Saved', [
+        { key: 'class', value: 'saved' }
+    ]);
+
+    card.appendChild(saveStatus);
+
+    setTimeout(function() {
+        var savedStatus = card.getElementsByClassName('saved');
+
+        Array.from(savedStatus).forEach(status => status.remove());
+    }, 2000);
+}
+
 function buildCardNodes(id, title, content, imageUrl) {
     var cards = document.getElementById('cards');
     var newCard = buildCard(id);
@@ -94,7 +128,7 @@ function generateCard() {
 
     buildCardNodes(cardId, name.value, content.value, imageUrl);
     persistCardToStorage(cardId, name.value, content.value, imageUrl);
-    clearInputs([name, content]);
+    clearInputs([name, content, image]);
     removePlaceholder();
 }
 
@@ -116,43 +150,11 @@ function buildCardTitle(title) {
     ]);
 
     node.addEventListener('focus', function() {
-        var card = this.parentNode
-        var existingStatus = card.getElementsByClassName('not_saved');
-
-        Array.from(existingStatus).forEach(status => {
-            status.remove();
-        });
-
-        var saveStatus = domUtility.buildNode('div', 'Not Saved', [
-            { key: 'class', value: 'not_saved' }
-        ]);
-
-        card.appendChild(saveStatus)
+        handleNotSavedDisplay.call(this)
     });
 
     node.addEventListener('blur', function() {
-        var card = this.parentNode;
-        var title = this.innerHTML;
-
-        updateCardInStorage(card.id, 'name', title)
-
-        var existingStatus = card.getElementsByClassName('not_saved');
-
-        Array.from(existingStatus).forEach(status => {
-            status.remove();
-        });
-
-        var saveStatus = domUtility.buildNode('div', 'Saved', [
-            { key: 'class', value: 'saved' }
-        ]);
-
-        card.appendChild(saveStatus);
-
-        setTimeout(function() {
-            var savedStatus = card.getElementsByClassName('saved');
-
-            Array.from(savedStatus).forEach(status => status.remove());
-        }, 2000);
+        handleCardSave.call(this, ['name'])
     })
 
     return node;
@@ -172,59 +174,31 @@ function buildCardContent(content) {
     ]);
 
     node.addEventListener('focus', function() {
-        var card = this.parentNode
-        var existingStatus = card.getElementsByClassName('not_saved');
-
-        Array.from(existingStatus).forEach(status => status.remove());
-
-        var saveStatus = domUtility.buildNode('div', 'Not Saved', [
-            { key: 'class', value: 'not_saved' }
-        ]);
-
-        card.appendChild(saveStatus)
+        handleNotSavedDisplay.call(this)
     });
 
     node.addEventListener('blur', function() {
-        console.log('here')
-
-        var card = this.parentNode;
-        var content = this.innerHTML;
-
-        updateCardInStorage(card.id, 'content', content)
-
-        var existingStatus = card.getElementsByClassName('not_saved');
-
-        Array.from(existingStatus).forEach(status => status.remove());
-
-        var saveStatus = domUtility.buildNode('div', 'Saved', [
-            { key: 'class', value: 'saved' }
-        ]);
-
-        card.appendChild(saveStatus);
-
-        setTimeout(function() {
-            var savedStatus = card.getElementsByClassName('saved');
-
-            Array.from(savedStatus).forEach(status => status.remove());
-        }, 2000);
+        handleCardSave.call(this, ['content'])
     })
 
     return node
 }
 
 function buildRemoveCard() {
-    var removeCard = domUtility.buildNode('div', 'X', [{ key: 'class', value: 'remove' }]);
-
+    var icon = domUtility.buildIcon('fas fa-times-circle remove');
+    var removeCard = domUtility.buildNode('div', '', [{ key: 'class', value: 'remove' }]);
+    removeCard.appendChild(icon);
     removeCard.addEventListener('click', function() {
         this.parentNode.remove();
         removeCardFromStorage(this.parentNode.id)
         var storageKey = 'card-storage';
         var currentCards = JSON.parse(localStorage.getItem(storageKey));
-        console.log(currentCards.length)
         if (currentCards.length === 0) {
             addPlaceholder();
         }
     })
+
+    console.log(removeCard)
 
     return removeCard
 }
