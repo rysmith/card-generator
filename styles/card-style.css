@@ -2,36 +2,88 @@ label {
     display: block;
 }
 
+body,
+button,
+input {
+    font-family: "Lucida Console", Monaco, monospace;
+    position: relative;
+}
+
+input {
+    min-width: 300px;
+}
+
 #cards {
     border: 1px solid green;
     min-height: 100px;
     padding: 10px;
 }
 
+.clear>button {
+    margin: 20px;
+    background-color: yellow;
+    height: 40px;
+}
+
+.clear {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.generate {
+    margin: 20px;
+    background-color: lightgreen;
+    height: 40px;
+}
+
+.inputs,
+h1 {
+    text-align: center;
+}
+
 .card {
     border: 1px solid black;
     padding: 5px;
-    margin: 10px;
+    margin: 20px;
     position: relative;
     max-width: 300px;
+    display: inline-block;
 }
 
 .title {
     border: 1px solid black;
     padding: 5px;
     margin: 5px 20px 5px 5px;
+    position: relative;
+}
+
+.not_saved {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    color: red;
+}
+
+.saved {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    color: green;
 }
 
 .artwork {
     border: 1px solid black;
     padding: 5px;
     margin: 5px 20px 5px 5px;
+    width: 200px;
 }
 
 .content {
     border: 1px solid black;
     padding: 5px;
     margin: 5px 20px 5px 5px;
+    min-height: 100px;
 }
 
 .remove {

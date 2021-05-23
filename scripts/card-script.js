@@ -11,13 +11,39 @@ function addEnterSubmitListener() {
     });
 }
 
-function getCardsFromStorage() {
-    var cards = localStorage.getItem('card-storage')
+function addPlaceholder() {
+    var cardsNode = document.getElementById('cards');
+    var placeholder = document.getElementById('placeholder');
 
-    if (cards) {
-        JSON.parse(cards).forEach(function(card) {
-            buildCardNodes(card.id, card.name, card.content);
+    if (!placeholder) {
+        var newPlaceholder = domUtility.buildNode('div', 'Cards go here.', [
+            { key: 'id', value: 'placeholder' }
+        ]);
+
+        cardsNode.appendChild(newPlaceholder);
+    }
+}
+
+function removePlaceholder() {
+    var placeholder = document.getElementById('placeholder');
+    if (placeholder) {
+        console.log(placeholder, 'here')
+
+        placeholder.remove();
+    }
+}
+
+function getCardsFromStorage() {
+    var cards = JSON.parse(localStorage.getItem('card-storage'));
+
+    if (cards && cards.length !== 0) {
+        removePlaceholder();
+
+        cards.forEach(function(card) {
+            buildCardNodes(card.id, card.name, card.content, card.imageUrl);
         });
+    } else {
+        addPlaceholder();
     }
 }
 
@@ -45,13 +71,13 @@ function updateCardInStorage(cardId, field, newValue) {
     localStorage.setItem('card-storage', JSON.stringify(updatedCards));
 }
 
-function buildCardNodes(id, title, content) {
+function buildCardNodes(id, title, content, imageUrl) {
     var cards = document.getElementById('cards');
     var newCard = buildCard(id);
 
     domUtility.appendChildren(newCard, [
         buildCardTitle(title),
-        buildCardArtWork(),
+        buildCardArtWork(imageUrl),
         buildCardContent(content),
         buildRemoveCard()
     ])
@@ -62,17 +88,14 @@ function buildCardNodes(id, title, content) {
 function generateCard() {
     var name = document.getElementById('name');
     var content = document.getElementById('content');
-    var placeholder = document.getElementById('placeholder');
+    var image = document.getElementById('image-url');
+    var imageUrl = image.value || 'https://picsum.photos/260?random=' + Math.random();
     var cardId = generateCardId();
 
-    if (placeholder) {
-        placeholder.remove();
-    }
-
-    buildCardNodes(cardId, name.value, content.value);
-
-    persistCardToStorage(cardId, name.value, content.value);
+    buildCardNodes(cardId, name.value, content.value, imageUrl);
+    persistCardToStorage(cardId, name.value, content.value, imageUrl);
     clearInputs([name, content]);
+    removePlaceholder();
 }
 
 function generateCardId() {
@@ -92,18 +115,50 @@ function buildCardTitle(title) {
         { key: 'contentEditable', value: 'true' }
     ]);
 
+    node.addEventListener('focus', function() {
+        var card = this.parentNode
+        var existingStatus = card.getElementsByClassName('not_saved');
+
+        Array.from(existingStatus).forEach(status => {
+            status.remove();
+        });
+
+        var saveStatus = domUtility.buildNode('div', 'Not Saved', [
+            { key: 'class', value: 'not_saved' }
+        ]);
+
+        card.appendChild(saveStatus)
+    });
+
     node.addEventListener('blur', function() {
         var card = this.parentNode;
         var title = this.innerHTML;
 
         updateCardInStorage(card.id, 'name', title)
+
+        var existingStatus = card.getElementsByClassName('not_saved');
+
+        Array.from(existingStatus).forEach(status => {
+            status.remove();
+        });
+
+        var saveStatus = domUtility.buildNode('div', 'Saved', [
+            { key: 'class', value: 'saved' }
+        ]);
+
+        card.appendChild(saveStatus);
+
+        setTimeout(function() {
+            var savedStatus = card.getElementsByClassName('saved');
+
+            Array.from(savedStatus).forEach(status => status.remove());
+        }, 2000);
     })
 
     return node;
 }
 
-function buildCardArtWork() {
-    var imageUrl = 'https://picsum.photos/260?random=' + Math.random()
+function buildCardArtWork(imageUrl) {
     return domUtility.buildNode('img', '', [
         { key: 'src', value: imageUrl },
         { key: 'class', value: 'artwork' },
@@ -116,10 +171,42 @@ function buildCardContent(content) {
         { key: 'contentEditable', value: 'true' }
     ]);
 
-    node.addEventListener('blur', function(e) {
+    node.addEventListener('focus', function() {
+        var card = this.parentNode
+        var existingStatus = card.getElementsByClassName('not_saved');
+
+        Array.from(existingStatus).forEach(status => status.remove());
+
+        var saveStatus = domUtility.buildNode('div', 'Not Saved', [
+            { key: 'class', value: 'not_saved' }
+        ]);
+
+        card.appendChild(saveStatus)
+    });
+
+    node.addEventListener('blur', function() {
+        console.log('here')
+
         var card = this.parentNode;
         var content = this.innerHTML;
-        updateCardInStorage(card.id, 'content', content);
+
+        updateCardInStorage(card.id, 'content', content)
+
+        var existingStatus = card.getElementsByClassName('not_saved');
+
+        Array.from(existingStatus).forEach(status => status.remove());
+
+        var saveStatus = domUtility.buildNode('div', 'Saved', [
+            { key: 'class', value: 'saved' }
+        ]);
+
+        card.appendChild(saveStatus);
+
+        setTimeout(function() {
+            var savedStatus = card.getElementsByClassName('saved');
+
+            Array.from(savedStatus).forEach(status => status.remove());
+        }, 2000);
     })
 
     return node
@@ -131,6 +218,12 @@ function buildRemoveCard() {
     removeCard.addEventListener('click', function() {
         this.parentNode.remove();
         removeCardFromStorage(this.parentNode.id)
+        var storageKey = 'card-storage';
+        var currentCards = JSON.parse(localStorage.getItem(storageKey));
+        console.log(currentCards.length)
+        if (currentCards.length === 0) {
+            addPlaceholder();
+        }
     })
 
     return removeCard
@@ -140,7 +233,7 @@ function clearInputs(inputs) {
     inputs.forEach(input => input.value = '');
 }
 
-function persistCardToStorage(id, name, content) {
+function persistCardToStorage(id, name, content, imageUrl) {
     var storageKey = 'card-storage';
     var currentCards = JSON.parse(localStorage.getItem(storageKey));
 
@@ -149,7 +242,7 @@ function persistCardToStorage(id, name, content) {
         currentCards = [];
     }
 
-    var newCard = { id, name, content };
+    var newCard = { id, name, content, imageUrl };
 
     var updatedCards = [...currentCards, newCard]
 
@@ -160,7 +253,7 @@ function removeCardsFromStorage() {
     localStorage.removeItem('card-storage');
     var cards = document.getElementById('cards');
 
-    Array.from(cards.children).forEach(card => card.remove());
+    Array.from(cards.getElementsByClassName('card')).forEach(card => card.remove());
 
-    cards.innerHTML = 'Cards go here.'
+    addPlaceholder();
 }

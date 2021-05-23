@@ -10,7 +10,7 @@
     <meta name='description' content='card generator'>
     <meta name='author' content='Ryan Smith'>
     <meta http-equiv='cache-control' content='max-age=0' />
-    <meta http-equiv='cache-control' content='no-cache' />
+    <meta http-equiv='cache-control' content='no-store' />
     <meta http-equiv='expires' content='0' />
     <meta property='og:title' content='Card Generator' />
 
@@ -18,19 +18,21 @@
 </head>
 
 <body id='body'>
+    <div class='clear'><button onclick='removeCardsFromStorage()'>Clear Saved Cards</button></div>
     <h1>Card Generator</h1>
-    <div><button onclick='removeCardsFromStorage()'>Clear Saved Cards</button></div>
-    <div>
+    <div class='inputs'>
         <label>Title:</label>
         <input type='text' id='name'>
         <br>
-        <label for='content'>Content:</label>
+        <label>Content:</label>
         <input type='text' id='content'>
+        <label>Image Url</label>
+        <input type='text' id='image-url' placeholder='random'>
         <br>
-        <input type='button' onclick='generateCard()' value='Generate Card'>
+        <input class='generate' type='button' onclick='generateCard()' value='Generate Card'>
     </div>
     <div id='cards'>
-        <p id='placeholder'>Cards go here.</p>
+        <div id='placeholder'>Cards go here.</div>
     </div>
 
     <script src='scripts/domUtility.js'></script>
