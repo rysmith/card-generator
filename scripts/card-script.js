@@ -75,10 +75,13 @@ function handleNotSavedDisplay() {
 
     Array.from(existingStatus).forEach(status => status.remove());
 
-    var saveStatus = domUtility.buildNode('div', 'Not Saved', [
+    var saveStatus = domUtility.buildNode('div', '', [
         { key: 'class', value: 'not_saved' }
     ]);
 
+    var saveIcon = domUtility.buildIcon('fas fa-save')
+
+    saveStatus.appendChild(saveIcon)
     card.appendChild(saveStatus)
 }
 
@@ -92,10 +95,13 @@ function handleCardSave(fieldName) {
 
     Array.from(existingStatus).forEach(status => status.remove());
 
-    var saveStatus = domUtility.buildNode('div', 'Saved', [
+    var saveStatus = domUtility.buildNode('div', '', [
         { key: 'class', value: 'saved' }
     ]);
 
+    var saveIcon = domUtility.buildIcon('fas fa-save')
+
+    saveStatus.appendChild(saveIcon)
     card.appendChild(saveStatus);
 
     setTimeout(function() {
@@ -197,8 +203,6 @@ function buildRemoveCard() {
             addPlaceholder();
         }
     })
-
-    console.log(removeCard)
 
     return removeCard
 }
