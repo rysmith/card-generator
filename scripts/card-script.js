@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    addEnterSubmitListener()
+    addEnterSubmitListener();
     getCardsFromStorage();
 });
 
@@ -27,6 +27,22 @@ function removeCardFromStorage(cardId) {
     var filteredCards = cards.filter(card => cardId !== card.id);
 
     localStorage.setItem('card-storage', JSON.stringify(filteredCards));
+}
+
+function updateCardInStorage(cardId, field, newValue) {
+    var storedCards = JSON.parse(localStorage.getItem('card-storage'));
+    var formated = newValue
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/<br>|<div>|<\/div>/gi, '\n\r')
+    var updatedCards = storedCards.map(storedCard => {
+        if (cardId === storedCard.id) {
+            storedCard[field] = formated;
+        }
+
+        return storedCard;
+    });
+
+    localStorage.setItem('card-storage', JSON.stringify(updatedCards));
 }
 
 function buildCardNodes(id, title, content) {
@@ -71,10 +87,19 @@ function buildCard(id) {
 }
 
 function buildCardTitle(title) {
-    return domUtility.buildNode('div', title, [
+    var node = domUtility.buildNode('div', title, [
         { key: 'class', value: 'title' },
         { key: 'contentEditable', value: 'true' }
     ]);
+
+    node.addEventListener('blur', function() {
+        var card = this.parentNode;
+        var title = this.innerHTML;
+
+        updateCardInStorage(card.id, 'name', title)
+    })
+
+    return node;
 }
 
 function buildCardArtWork() {
@@ -86,10 +111,18 @@ function buildCardArtWork() {
 }
 
 function buildCardContent(content) {
-    return domUtility.buildNode('div', content, [
+    var node = domUtility.buildNode('div', content, [
         { key: 'class', value: 'content' },
         { key: 'contentEditable', value: 'true' }
     ]);
+
+    node.addEventListener('blur', function(e) {
+        var card = this.parentNode;
+        var content = this.innerHTML;
+        updateCardInStorage(card.id, 'content', content);
+    })
+
+    return node
 }
 
 function buildRemoveCard() {
