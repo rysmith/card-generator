@@ -1,4 +1,4 @@
-label {
+.inputs>label {
     display: block;
 }
 
@@ -7,10 +7,6 @@ button,
 input {
     font-family: "Lucida Console", Monaco, monospace;
     position: relative;
-}
-
-input {
-    min-width: 300px;
 }
 
 #cards {
@@ -40,6 +36,10 @@ input {
 .inputs,
 h1 {
     text-align: center;
+}
+
+.inputs>input {
+    min-width: 300px;
 }
 
 .card {
@@ -94,6 +94,7 @@ h1 {
     background-color: white;
     width: 200px;
     font-size: 12px;
+    overflow: hidden;
 }
 
 .remove {
@@ -104,4 +105,27 @@ h1 {
     color: red;
     background-color: white;
     border-radius: 10px;
+}
+
+.tags {
+    color: blue;
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.tag {
+    position: relative;
+    background: orange;
+    color: white;
+    padding: 3px;
+    font-size: 10px;
+    margin: 5px;
+}
+
+#create-tag {
+    position: absolute;
+    top: 2px;
+    left: 29px;
+    background-color: white;
+    width: 188px;
 }

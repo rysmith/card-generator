@@ -38,7 +38,7 @@ function getCardsFromStorage() {
         removePlaceholder();
 
         cards.forEach(function(card) {
-            buildCardNodes(card.id, card.name, card.content, card.imageUrl);
+            buildCardNodes(card.id, card.name, card.content, card.imageUrl, card.tags);
         });
     } else {
         addPlaceholder();
@@ -55,9 +55,15 @@ function removeCardFromStorage(cardId) {
 
 function updateCardInStorage(cardId, field, newValue) {
     var storedCards = JSON.parse(localStorage.getItem('card-storage'));
-    var formated = newValue
-        .replace(/&nbsp;/gi, ' ')
-        .replace(/<br>|<div>|<\/div>/gi, '\n\r')
+    var formated;
+    if (Array.isArray(newValue)) {
+        formated = newValue
+    } else {
+        formated = newValue
+            .replace(/&nbsp;/gi, ' ')
+            .replace(/<br>|<div>|<\/div>/gi, '\n\r')
+    }
+
     var updatedCards = storedCards.map(storedCard => {
         if (cardId === storedCard.id) {
             storedCard[field] = formated;
@@ -111,11 +117,12 @@ function handleCardSave(fieldName) {
     }, 2000);
 }
 
-function buildCardNodes(id, title, content, imageUrl) {
+function buildCardNodes(id, title, content, imageUrl, tags) {
     var cards = document.getElementById('cards');
     var newCard = buildCard(id);
 
     domUtility.appendChildren(newCard, [
+        buildCardTags(tags),
         buildCardTitle(title),
         buildCardArtWork(imageUrl),
         buildCardContent(content),
@@ -125,6 +132,77 @@ function buildCardNodes(id, title, content, imageUrl) {
     cards.appendChild(newCard);
 }
 
+function buildCardTags(currentTags) {
+    var label = domUtility.buildNode('label', '', [
+        { key: 'for', value: 'create-tag' }
+    ])
+    var icon = domUtility.buildIcon('fas fa-tag');
+    var tags = domUtility.buildNode('div', '', [
+        { key: 'class', value: 'tags' }
+    ]);
+
+    label.appendChild(icon)
+    tags.appendChild(label);
+
+    if (currentTags) {
+        currentTags.map(currentTag => {
+            var tagNode = domUtility.buildNode('span', currentTag, [
+                { key: 'class', value: 'tag' }
+            ])
+
+            tags.appendChild(tagNode);
+        });
+    }
+
+    tags.addEventListener('click', function() {
+        var card = this.parentNode
+        var newTagInput = domUtility.buildNode('input', '', [
+            { key: 'id', value: 'create-tag' },
+            { key: 'placeholder', value: 'tag name, e.g. GBH' },
+            { key: 'autofocus', value: 'true' }
+        ])
+
+        newTagInput.addEventListener('keyup', function(e) {
+            if (e.key == 'Enter') {
+                if (this.value !== '') {
+                    var newTag = domUtility.buildNode('span', this.value.replace(',', ''), [
+                        { key: 'class', value: 'tag' }
+                    ])
+
+                    tags.appendChild(newTag);
+
+                    var updatedTags = Array.from(tags.children)
+                        .map(child => child.innerHTML.replace(/,/, ''))
+                        .slice(1)
+
+                    updateCardInStorage(card.id, 'tags', updatedTags)
+
+                    var saveStatus = domUtility.buildNode('div', '', [
+                        { key: 'class', value: 'saved' }
+                    ]);
+
+                    var saveIcon = domUtility.buildIcon('fas fa-save')
+
+                    saveStatus.appendChild(saveIcon)
+                    card.appendChild(saveStatus);
+
+                    setTimeout(function() {
+                        var savedStatus = card.getElementsByClassName('saved');
+
+                        Array.from(savedStatus).forEach(status => status.remove());
+                    }, 2000);
+                }
+
+                this.remove();
+            }
+        });
+
+        card.appendChild(newTagInput)
+    });
+
+    return tags
+}
+
 function generateCard() {
     var name = document.getElementById('name');
     var content = document.getElementById('content');
@@ -132,7 +210,7 @@ function generateCard() {
     var imageUrl = image.value || 'https://picsum.photos/260?random=' + Math.random();
     var cardId = generateCardId();
 
-    buildCardNodes(cardId, name.value, content.value, imageUrl);
+    buildCardNodes(cardId, name.value, content.value, imageUrl, []);
     persistCardToStorage(cardId, name.value, content.value, imageUrl);
     clearInputs([name, content, image]);
     removePlaceholder();
