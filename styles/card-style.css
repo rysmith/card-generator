@@ -120,6 +120,11 @@ h1 {
     padding: 3px;
     font-size: 10px;
     margin: 5px;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background-color: red;
 }
 
 #create-tag {
@@ -128,4 +133,13 @@ h1 {
     left: 29px;
     background-color: white;
     width: 188px;
+}
+
+.tags>label>svg:hover {
+    cursor: pointer;
+    color: green;
+}
+
+#search {
+    margin-bottom: 20px;
 }

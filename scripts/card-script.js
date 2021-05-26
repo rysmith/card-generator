@@ -115,12 +115,7 @@ function handleNotSavedDisplay() {
     card.appendChild(saveStatus)
 }
 
-function handleCardSave(fieldName) {
-    var card = this.parentNode;
-    var value = this.innerHTML;
-
-    updateCardInStorage(card.id, fieldName, value)
-
+function handleSavedDisplay(card) {
     var existingStatus = card.getElementsByClassName('not_saved');
 
     Array.from(existingStatus).forEach(status => status.remove());
@@ -141,6 +136,14 @@ function handleCardSave(fieldName) {
     }, 2000);
 }
 
+function handleCardSave(fieldName) {
+    var card = this.parentNode;
+    var value = this.innerHTML;
+
+    updateCardInStorage(card.id, fieldName, value)
+    handleSavedDisplay(card)
+}
+
 function buildCardNodes(id, title, content, imageUrl, tags) {
     var cards = document.getElementById('cards');
     var newCard = buildCard(id);
@@ -157,18 +160,37 @@ function buildCardNodes(id, title, content, imageUrl, tags) {
 }
 
 function handleTagClick(tag, cardId) {
-    var cards = JSON.parse(localStorage.getItem('card-storage')).map(cardFromStorage => {
-        if (cardId === cardFromStorage.id) {
-            var tagIndex = cardFromStorage.tags.indexOf(tag.innerHTML.replace(',', ''));
+    var card = JSON.parse(localStorage.getItem('card-storage')).find(card => card.id === cardId)
+    var tagIndex = card.tags.indexOf(tag.innerHTML.replace(',', ''));
 
-            cardFromStorage.tags.splice(tagIndex, 1)
+    card.tags.splice(tagIndex, 1);
+    updateCardInStorage(card.id, 'tags', card.tags)
+    tag.remove();
+}
+
+function handleTagSave(tagInput, event, tags, card) {
+    if (event.key == 'Enter') {
+        if (tagInput.value !== '') {
+            var newTag = domUtility.buildNode('span', tagInput.value.replace(',', ''), [
+                { key: 'class', value: 'tag' }
+            ])
+
+            newTag.addEventListener('click', function() {
+                handleTagClick(newTag, card.id)
+            })
+
+            tags.appendChild(newTag);
+
+            var updatedTags = Array.from(tags.children)
+                .map(child => child.innerHTML.replace(/,/, ''))
+                .slice(1)
+
+            updateCardInStorage(card.id, 'tags', updatedTags)
+            handleSavedDisplay(card)
         }
 
-        return cardFromStorage;
-    });
-
-    localStorage.setItem('card-storage', JSON.stringify(cards))
-    tag.remove();
+        tagInput.remove();
+    }
 }
 
 function buildCardTags(currentTags) {
@@ -208,42 +230,7 @@ function buildCardTags(currentTags) {
         ])
 
         newTagInput.addEventListener('keyup', function(e) {
-            if (e.key == 'Enter') {
-                if (this.value !== '') {
-                    var newTag = domUtility.buildNode('span', this.value.replace(',', ''), [
-                        { key: 'class', value: 'tag' }
-                    ])
-
-                    newTag.addEventListener('click', function() {
-                        handleTagClick(newTag, card.id)
-                    })
-
-                    tags.appendChild(newTag);
-
-                    var updatedTags = Array.from(tags.children)
-                        .map(child => child.innerHTML.replace(/,/, ''))
-                        .slice(1)
-
-                    updateCardInStorage(card.id, 'tags', updatedTags)
-
-                    var saveStatus = domUtility.buildNode('div', '', [
-                        { key: 'class', value: 'saved' }
-                    ]);
-
-                    var saveIcon = domUtility.buildIcon('fas fa-save')
-
-                    saveStatus.appendChild(saveIcon)
-                    card.appendChild(saveStatus);
-
-                    setTimeout(function() {
-                        var savedStatus = card.getElementsByClassName('saved');
-
-                        Array.from(savedStatus).forEach(status => status.remove());
-                    }, 2000);
-                }
-
-                this.remove();
-            }
+            handleTagSave(this, e, tags, card)
         });
 
         card.appendChild(newTagInput)
@@ -281,6 +268,8 @@ function buildCardTitle(title) {
         { key: 'class', value: 'title' },
         { key: 'contentEditable', value: 'true' }
     ]);
+
+
 
     node.addEventListener('focus', function() {
         handleNotSavedDisplay.call(this)
@@ -326,6 +315,7 @@ function buildRemoveCard() {
         removeCardFromStorage(this.parentNode.id)
         var storageKey = 'card-storage';
         var currentCards = JSON.parse(localStorage.getItem(storageKey));
+
         if (currentCards.length === 0) {
             addPlaceholder();
         }
