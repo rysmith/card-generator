@@ -132,6 +132,21 @@ function buildCardNodes(id, title, content, imageUrl, tags) {
     cards.appendChild(newCard);
 }
 
+function handleTagClick(tag, cardId) {
+    var cards = JSON.parse(localStorage.getItem('card-storage')).map(cardFromStorage => {
+        if (cardId === cardFromStorage.id) {
+            var tagIndex = cardFromStorage.tags.indexOf(tag.innerHTML.replace(',', ''));
+
+            cardFromStorage.tags.splice(tagIndex, 1)
+        }
+
+        return cardFromStorage;
+    });
+
+    localStorage.setItem('card-storage', JSON.stringify(cards))
+    tag.remove();
+}
+
 function buildCardTags(currentTags) {
     var label = domUtility.buildNode('label', '', [
         { key: 'for', value: 'create-tag' }
@@ -150,12 +165,18 @@ function buildCardTags(currentTags) {
                 { key: 'class', value: 'tag' }
             ])
 
+            tagNode.addEventListener('click', function() {
+                var card = tags.parentNode
+
+                handleTagClick(tagNode, card.id)
+            });
+
             tags.appendChild(tagNode);
         });
     }
 
-    tags.addEventListener('click', function() {
-        var card = this.parentNode
+    label.addEventListener('click', function() {
+        var card = tags.parentNode
         var newTagInput = domUtility.buildNode('input', '', [
             { key: 'id', value: 'create-tag' },
             { key: 'placeholder', value: 'tag name, e.g. GBH' },
@@ -168,6 +189,10 @@ function buildCardTags(currentTags) {
                     var newTag = domUtility.buildNode('span', this.value.replace(',', ''), [
                         { key: 'class', value: 'tag' }
                     ])
+
+                    newTag.addEventListener('click', function() {
+                        handleTagClick(newTag, card.id)
+                    })
 
                     tags.appendChild(newTag);
 
