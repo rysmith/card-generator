@@ -80,8 +80,8 @@ h1 {
 .artwork {
     border: 5px solid darkslategray;
     margin: 5px;
+    width: 200px;
     height: 200px;
-    overflow: hidden;
     border-radius: 5px;
 }
 
@@ -142,10 +142,4 @@ h1 {
 
 #search {
     margin-bottom: 20px;
-}
-
-.github-link {
-    position: absolute;
-    top: 0;
-    right: 10px;
 }

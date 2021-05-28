@@ -6,7 +6,7 @@ Create playing cards for your next super sweet game.  Create a card, add an imag
 Can be found at [http://r4an.com/cards.html](http://r4an.com/cards.html)
 
 ## All Client Side
-- Static html, css, and js files served via s3.
+- Static html, css, and js files erved via s3.
 - No backend
 - Data persists in your browser's `localStorage`
 

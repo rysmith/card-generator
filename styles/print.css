@@ -18,6 +18,7 @@ h2 {
 .card {
     border: 1px solid darkslategray;
     padding: 5px;
+    margin: 20px;
     position: relative;
     max-width: 300px;
     display: inline-block;
