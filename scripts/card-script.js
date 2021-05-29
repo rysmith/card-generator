@@ -20,6 +20,7 @@ function addSearchListener() {
                 cards
                     .filter(card => card.tags)
                     .filter(card => card.tags.includes(this.value))
+                    .sort(sortCards)
                     .forEach(card => buildCardNodes(card.id, card.name, card.content, card.imageUrl, card.tags))
             }
         }
@@ -55,8 +56,24 @@ function removePlaceholder() {
     }
 }
 
+function sortCards(a, b) {
+    var cardA = a.name.toUpperCase();
+    var cardB = b.name.toUpperCase();
+
+    if (cardA < cardB) {
+        return -1;
+    }
+    if (cardA > cardB) {
+        return 1;
+    }
+
+    return 0;
+}
+
 function getCardsFromStorage() {
-    var cards = JSON.parse(localStorage.getItem('card-storage'));
+    var cards = JSON
+        .parse(localStorage.getItem('card-storage'))
+        .sort(sortCards);
 
     if (cards && cards.length !== 0) {
         removePlaceholder();
