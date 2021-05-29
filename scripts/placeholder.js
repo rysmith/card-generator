@@ -1,11 +1,15 @@
 var placeholder = (function() {
-    function build() {
+    var placeholderId = 'placeholder';
+    var defaultText = 'Currently there are no cards.  Try creating one by clicking the green "Generate Card" button above.';
+
+    function build(text) {
         var cardsNode = document.getElementById('cards');
-        var placeholder = document.getElementById('placeholder');
+        var placeholder = document.getElementById(placeholderId);
+        var placeholderText = text || defaultText
 
         if (!placeholder) {
-            var newPlaceholder = domUtility.buildNode('div', 'Cards go here.', [
-                { key: 'id', value: 'placeholder' }
+            var newPlaceholder = domUtility.buildNode('div', placeholderText, [
+                { key: 'id', value: placeholderId }
             ]);
 
             cardsNode.appendChild(newPlaceholder);
@@ -13,7 +17,7 @@ var placeholder = (function() {
     }
 
     function remove() {
-        var placeholder = document.getElementById('placeholder');
+        var placeholder = document.getElementById(placeholderId);
         if (placeholder) {
             placeholder.remove();
         }

@@ -1,9 +1,32 @@
 var cardStorage = (function() {
+    var storageKey = 'card-storage';
+
+    function sortByTitle(a, b) {
+        var cardA = a.name.toUpperCase();
+        var cardB = b.name.toUpperCase();
+
+        if (cardA < cardB) {
+            return -1;
+        }
+        if (cardA > cardB) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    function get() {
+        return JSON
+            .parse(localStorage.getItem(storageKey) || '[]')
+            .sort(sortByTitle);
+    }
+
+    function getCardById(cardId) {
+        return get().find(card => card.id === cardId)
+    }
+
     function getCardsFromStorage() {
-        var cardsFromStorage = localStorage.getItem('card-storage') || '[]';
-        var cards = JSON
-            .parse(cardsFromStorage)
-            .sort(card.sortByTitle);
+        var cards = get();
 
         if (cards && cards.length !== 0) {
             placeholder.remove();
@@ -17,19 +40,19 @@ var cardStorage = (function() {
                     item.tags
                 );
             });
+        } else {
+            placeholder.build();
         }
     }
 
     function removeCardFromStorage(cardId) {
-        var cards = JSON.parse(localStorage.getItem('card-storage'));
+        var filteredCards = get().filter(card => cardId !== card.id);
 
-        var filteredCards = cards.filter(card => cardId !== card.id);
-
-        localStorage.setItem('card-storage', JSON.stringify(filteredCards));
+        localStorage.setItem(storageKey, JSON.stringify(filteredCards));
     }
 
     function updateCardInStorage(cardId, field, newValue) {
-        var storedCards = JSON.parse(localStorage.getItem('card-storage'));
+        var storedCards = get();
         var formated;
         if (Array.isArray(newValue)) {
             formated = newValue
@@ -47,12 +70,11 @@ var cardStorage = (function() {
             return storedCard;
         });
 
-        localStorage.setItem('card-storage', JSON.stringify(updatedCards));
+        localStorage.setItem(storageKey, JSON.stringify(updatedCards));
     }
 
     function persistCardToStorage(id, name, content, imageUrl) {
-        var storageKey = 'card-storage';
-        var currentCards = JSON.parse(localStorage.getItem(storageKey));
+        var currentCards = get();
 
         if (!Array.isArray(currentCards)) {
             localStorage.removeItem(storageKey);
@@ -67,7 +89,7 @@ var cardStorage = (function() {
     }
 
     function removeCardsFromStorage() {
-        localStorage.removeItem('card-storage');
+        localStorage.removeItem(storageKey);
         var cards = document.getElementById('cards');
 
         Array.from(cards.getElementsByClassName('card')).forEach(card => card.remove());
@@ -76,6 +98,8 @@ var cardStorage = (function() {
     }
 
     return {
+        get: get,
+        getCardById: getCardById,
         getCardsFromStorage: getCardsFromStorage,
         persistCardToStorage: persistCardToStorage,
         removeCardFromStorage: removeCardFromStorage,

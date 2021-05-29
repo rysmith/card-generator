@@ -1,18 +1,4 @@
 var card = (function() {
-    function sortByTitle(a, b) {
-        var cardA = a.name.toUpperCase();
-        var cardB = b.name.toUpperCase();
-
-        if (cardA < cardB) {
-            return -1;
-        }
-        if (cardA > cardB) {
-            return 1;
-        }
-
-        return 0;
-    }
-
     function handleNotSavedDisplay() {
         var card = this.parentNode
         var existingStatus = card.getElementsByClassName('not_saved');
@@ -74,11 +60,11 @@ var card = (function() {
     }
 
     function handleTagClick(tag, cardId) {
-        var card = JSON.parse(localStorage.getItem('card-storage')).find(card => card.id === cardId)
-        var tagIndex = card.tags.indexOf(tag.innerHTML.replace(',', ''));
+        var cardData = cardStorage.getCardById(cardId);
+        var tagIndex = cardData.tags.indexOf(tag.innerHTML.replace(',', ''));
 
-        card.tags.splice(tagIndex, 1);
-        cardStorage.updateCardInStorage(card.id, 'tags', card.tags)
+        cardData.tags.splice(tagIndex, 1);
+        cardStorage.updateCardInStorage(cardData.id, 'tags', cardData.tags)
         tag.remove();
     }
 
@@ -245,6 +231,5 @@ var card = (function() {
     return {
         buildNodes: buildNodes,
         generateCard: generateCard,
-        sortByTitle: sortByTitle
     }
 })()

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     addEnterSubmitListener();
     addSearchListener();
+    placeholder.build();
     cardStorage.getCardsFromStorage();
 });
 
@@ -22,16 +23,27 @@ function addSearchListener() {
 
                 cardStorage.getCardsFromStorage();
             } else {
-                var cards = JSON.parse(localStorage.getItem('card-storage'));
                 Array.from(document.getElementById('cards').children).forEach(card => card.remove());
 
-                cards
-                    .filter(card => card.tags)
-                    .filter(card => card.tags.includes(this.value))
-                    .sort(card.sortByTitle)
-                    .forEach(c => card.buildNodes(c.id, c.name, c.content, c.imageUrl, c.tags))
+                var cards = cardStorage
+                    .get()
+                    .filter(cardData => cardData.tags && cardData.tags.includes(this.value));
+
+                if (cards.length > 0) {
+                    cards.forEach(cardData => {
+                        card.buildNodes(
+                            cardData.id,
+                            cardData.name,
+                            cardData.content,
+                            cardData.imageUrl,
+                            cardData.tags
+                        )
+                    });
+                } else {
+                    placeholder.build('No cards matched your search.');
+                }
+
             }
         }
-
     });
 }
