@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     addEnterSubmitListener();
     addSearchListener();
-    card.getCardsFromStorage();
+    cardStorage.getCardsFromStorage();
 });
 
 function addEnterSubmitListener() {
@@ -20,7 +20,7 @@ function addSearchListener() {
             if (this.value === '') {
                 Array.from(document.getElementById('cards').children).forEach(card => card.remove());
 
-                card.getCardsFromStorage();
+                cardStorage.getCardsFromStorage();
             } else {
                 var cards = JSON.parse(localStorage.getItem('card-storage'));
                 Array.from(document.getElementById('cards').children).forEach(card => card.remove());
@@ -28,41 +28,10 @@ function addSearchListener() {
                 cards
                     .filter(card => card.tags)
                     .filter(card => card.tags.includes(this.value))
-                    .sort(card.sortCards)
-                    .forEach(c => card.buildCardNodes(c.id, c.name, c.content, c.imageUrl, c.tags))
+                    .sort(card.sortByTitle)
+                    .forEach(c => card.buildNodes(c.id, c.name, c.content, c.imageUrl, c.tags))
             }
         }
 
     });
-}
-
-
-
-function addPlaceholder() {
-    var cardsNode = document.getElementById('cards');
-    var placeholder = document.getElementById('placeholder');
-
-    if (!placeholder) {
-        var newPlaceholder = domUtility.buildNode('div', 'Cards go here.', [
-            { key: 'id', value: 'placeholder' }
-        ]);
-
-        cardsNode.appendChild(newPlaceholder);
-    }
-}
-
-function removePlaceholder() {
-    var placeholder = document.getElementById('placeholder');
-    if (placeholder) {
-        placeholder.remove();
-    }
-}
-
-function removeCardsFromStorage() {
-    localStorage.removeItem('card-storage');
-    var cards = document.getElementById('cards');
-
-    Array.from(cards.getElementsByClassName('card')).forEach(card => card.remove());
-
-    addPlaceholder();
 }
