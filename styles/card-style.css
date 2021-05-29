@@ -121,6 +121,8 @@ h1 {
     font-size: 10px;
     margin: 5px;
     cursor: pointer;
+    border-radius: 30px;
+    vertical-align: middle;
 }
 
 .tag:hover {
