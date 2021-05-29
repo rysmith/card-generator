@@ -117,7 +117,7 @@ h1 {
     position: relative;
     background: orange;
     color: white;
-    padding: 3px;
+    padding: 3px 5px;
     font-size: 10px;
     margin: 5px;
     cursor: pointer;
