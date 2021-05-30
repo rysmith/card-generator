@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener('DOMContentLoaded', function() {
     addEnterSubmitListener();
     search.addHandler();
-    cardStorage.getCardsFromStorage();
+    card.buildCardNodes();
     card.clearInputs([document.getElementById('search')])
 
 });

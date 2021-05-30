@@ -15,44 +15,33 @@ var cardStorage = (function() {
         return 0;
     }
 
-    function get() {
+    function getCards(filterFn) {
+        var filterBy;
+
+        if (filterFn) {
+            filterBy = filterFn
+        } else {
+            filterBy = card => card
+        }
+
         return JSON
             .parse(localStorage.getItem(storageKey) || '[]')
+            .filter(filterBy)
             .sort(sortByTitle);
     }
 
     function getCardById(cardId) {
-        return get().find(card => card.id === cardId)
-    }
-
-    function getCardsFromStorage() {
-        var cards = get();
-
-        if (cards && cards.length !== 0) {
-            placeholder.remove();
-
-            cards.forEach(function(item) {
-                card.buildNodes(
-                    item.id,
-                    item.name,
-                    item.content,
-                    item.imageUrl,
-                    item.tags
-                );
-            });
-        } else {
-            placeholder.build();
-        }
+        return getCards(card => card.id === cardId)[0]
     }
 
     function removeCardFromStorage(cardId) {
-        var filteredCards = get().filter(card => cardId !== card.id);
+        var filteredCards = getCards(card => cardId !== card.id);
 
         localStorage.setItem(storageKey, JSON.stringify(filteredCards));
     }
 
     function updateCardInStorage(cardId, field, newValue) {
-        var storedCards = get();
+        var storedCards = getCards();
         var formated;
         if (Array.isArray(newValue)) {
             formated = newValue
@@ -73,12 +62,11 @@ var cardStorage = (function() {
         localStorage.setItem(storageKey, JSON.stringify(updatedCards));
     }
 
-    function persistCardToStorage(id, name, content, imageUrl) {
-        var currentCards = get();
+    function saveCardToStorage(id, name, content, imageUrl) {
+        var currentCards = getCards();
 
         if (!Array.isArray(currentCards)) {
-            localStorage.removeItem(storageKey);
-            currentCards = [];
+            console.log('⚠️  `card-storage` is not an array and will not be parsed correctly.')
         }
 
         var newCard = { id, name, content, imageUrl };
@@ -98,10 +86,9 @@ var cardStorage = (function() {
     }
 
     return {
-        get: get,
+        getCards: getCards,
         getCardById: getCardById,
-        getCardsFromStorage: getCardsFromStorage,
-        persistCardToStorage: persistCardToStorage,
+        saveCardToStorage: saveCardToStorage,
         removeCardFromStorage: removeCardFromStorage,
         removeCardsFromStorage: removeCardsFromStorage,
         updateCardInStorage: updateCardInStorage

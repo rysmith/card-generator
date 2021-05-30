@@ -10,10 +10,10 @@ var tag = (function() {
         ])
 
         tagNode.addEventListener('click', function() {
-            search.removeCarsFromDisplay();
-            cardStorage.getCardsFromStorage();
-            card.clearInputs([search.getSearchInput()])
+            card.removeCarsFromDisplay();
             search.removeSearchInfoDisplay();
+            card.buildCardNodes();
+            card.clearInputs([search.getSearchInput()])
         });
 
         return tagNode;
@@ -89,8 +89,8 @@ var tag = (function() {
                 ])
 
                 newTag.addEventListener('click', function() {
-                    handleTagClick(newTag, cardNode.id);
-                    tag.remove();
+                    handleTagClick(this, cardNode.id);
+                    this.remove();
                 })
 
                 tags.appendChild(newTag);

@@ -1,7 +1,10 @@
 var card = (function() {
+    var cardClass = 'card';
+    var cardsId = 'cards';
+
     function handleNotSavedDisplay() {
-        var card = this.parentNode
-        var existingStatus = card.getElementsByClassName('not_saved');
+        var cardNode = this.parentNode
+        var existingStatus = cardNode.getElementsByClassName('not_saved');
 
         Array.from(existingStatus).forEach(status => status.remove());
 
@@ -12,7 +15,7 @@ var card = (function() {
         var saveIcon = domUtility.buildIcon('fas fa-save')
 
         saveStatus.appendChild(saveIcon)
-        card.appendChild(saveStatus)
+        cardNode.appendChild(saveStatus)
     }
 
     function handleSavedDisplay(card) {
@@ -44,8 +47,14 @@ var card = (function() {
         handleSavedDisplay(card)
     }
 
+    function removeCarsFromDisplay() {
+        var cards = document.getElementById(cardsId).children
+
+        Array.from(cards).forEach(card => card.remove());
+    }
+
     function buildNodes(id, title, content, imageUrl, tags) {
-        var cards = document.getElementById('cards');
+        var cards = document.getElementById(cardsId);
         var newCard = buildCard(id);
 
         domUtility.appendChildren(newCard, [
@@ -59,15 +68,35 @@ var card = (function() {
         cards.appendChild(newCard);
     }
 
+    function buildCardNodes(cardsData, placeholderText) {
+        var cards = cardsData || cardStorage.getCards();
+
+        if (cards && cards.length !== 0) {
+            placeholder.remove();
+
+            cards.forEach(function(item) {
+                card.buildNodes(
+                    item.id,
+                    item.name,
+                    item.content,
+                    item.imageUrl,
+                    item.tags
+                );
+            });
+        } else {
+            placeholder.build(...placeholderText);
+        }
+    }
+
     function generateCard() {
         var name = document.getElementById('name');
         var content = document.getElementById('content');
         var image = document.getElementById('image-url');
-        var imageUrl = image.value || 'https://picsum.photos/260?random=' + Math.random();
+        var imageUrl = image.value || 'https://picsum.photos/200/150?random=' + Math.random();
         var cardId = generateCardId();
 
         buildNodes(cardId, name.value, content.value, imageUrl, []);
-        cardStorage.persistCardToStorage(cardId, name.value, content.value, imageUrl);
+        cardStorage.saveCardToStorage(cardId, name.value, content.value, imageUrl);
         clearInputs([name, content, image]);
         placeholder.remove();
     }
@@ -78,7 +107,7 @@ var card = (function() {
 
     function buildCard(id) {
         return domUtility.buildNode('div', '', [
-            { key: 'class', value: 'card' },
+            { key: 'class', value: cardClass },
             { key: 'id', value: id }
         ]);
     }
@@ -88,8 +117,6 @@ var card = (function() {
             { key: 'class', value: 'title' },
             { key: 'contentEditable', value: 'true' }
         ]);
-
-
 
         node.addEventListener('focus', function() {
             handleNotSavedDisplay.call(this)
@@ -133,8 +160,8 @@ var card = (function() {
         removeCard.addEventListener('click', function() {
             this.parentNode.remove();
             cardStorage.removeCardFromStorage(this.parentNode.id)
-            var cardsInStorage = cardStorage.get();
-            var cardsDiplayed = document.querySelector('.card');
+            var cardsInStorage = cardStorage.getCards();
+            var cardsDiplayed = document.getElementsByClassName(cardClass);
 
             if (!cardsDiplayed && cardsInStorage.length > 0) {
                 placeholder.build(
@@ -162,8 +189,10 @@ var card = (function() {
     }
 
     return {
+        removeCarsFromDisplay: removeCarsFromDisplay,
         clearInputs: clearInputs,
         buildNodes: buildNodes,
+        buildCardNodes: buildCardNodes,
         generateCard: generateCard,
         handleSavedDisplay: handleSavedDisplay
     }
