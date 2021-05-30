@@ -15,6 +15,7 @@ var placeholder = (function() {
         if (!currentPlaceholder) {
             var cards = document.getElementById('cards');
             var newPlaceholder = buildDefaults();
+
             if (text) {
                 newPlaceholder = [
                     domUtility.buildIcon(iconStyle),
