@@ -9,12 +9,6 @@ input {
     position: relative;
 }
 
-#cards {
-    border: 1px solid green;
-    min-height: 100px;
-    padding: 10px;
-}
-
 .clear>button {
     margin: 20px;
     background-color: yellow;

@@ -2,6 +2,11 @@ document.addEventListener("DOMContentLoaded", function() {
     addEnterSubmitListener();
     addSearchListener();
     cardStorage.getCardsFromStorage();
+
+    var search = document.getElementById('search')
+
+    card.clearInputs([search])
+
 });
 
 function addEnterSubmitListener() {

@@ -213,12 +213,24 @@ var card = (function() {
         removeCard.addEventListener('click', function() {
             this.parentNode.remove();
             cardStorage.removeCardFromStorage(this.parentNode.id)
+            var cardsInStorage = cardStorage.get();
+            var cardsDiplayed = document.querySelector('.card');
 
-            if (!document.querySelector('.card')) {
+            if (!cardsDiplayed && cardsInStorage.length > 0) {
                 placeholder.build(
                     'No cards matched your search. Remember only tags are searchable.',
                     'fas fa-search-minus fa-7x'
                 );
+            }
+
+            if (!cardsDiplayed && cardsInStorage.length === 0) {
+                placeholder.build();
+                var search = document.getElementById('search');
+                var searchInfo = document.getElementById('search-info');
+
+                clearInputs([search]);
+                Array.from(searchInfo.children).forEach(child => child.remove());
+
             }
         })
 
@@ -230,6 +242,7 @@ var card = (function() {
     }
 
     return {
+        clearInputs: clearInputs,
         buildNodes: buildNodes,
         generateCard: generateCard,
     }
