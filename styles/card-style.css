@@ -139,6 +139,7 @@ h1 {
 #search-info {
     min-height: 40px;
     font-size: 11px;
+    margin-left: 20px;
 }
 
 #placeholder {

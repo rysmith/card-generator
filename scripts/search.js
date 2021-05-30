@@ -54,8 +54,11 @@ var search = (function() {
                     }
 
                     var searchIcon = domUtility.buildIcon('fas fa-search')
-                    var currentSearchText = ' Currently filtering tags by: ' + this.value;
+                    var currentSearchText = ' Currently filtering tags by: ';
                     var currentSearchNode = domUtility.buildNode('span', currentSearchText);
+                    var currentSearchTag = tag.buildCurrentSearchTag(this.value);
+
+                    currentSearchNode.appendChild(currentSearchTag);
 
                     domUtility.appendChildren(getSearchInfo(), [searchIcon, currentSearchNode]);
                 }
@@ -64,6 +67,9 @@ var search = (function() {
     }
 
     return {
-        addHandler: addHandler
+        addHandler: addHandler,
+        getSearchInput: getSearchInput,
+        removeSearchInfoDisplay: removeSearchInfoDisplay,
+        removeCarsFromDisplay: removeCarsFromDisplay
     }
 })();

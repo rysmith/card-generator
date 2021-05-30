@@ -49,7 +49,7 @@ var card = (function() {
         var newCard = buildCard(id);
 
         domUtility.appendChildren(newCard, [
-            buildCardTags(tags),
+            tag.buildTags(tags),
             buildCardTitle(title),
             buildCardArtWork(imageUrl),
             buildCardContent(content),
@@ -57,86 +57,6 @@ var card = (function() {
         ])
 
         cards.appendChild(newCard);
-    }
-
-    function handleTagClick(tag, cardId) {
-        var cardData = cardStorage.getCardById(cardId);
-        var tagIndex = cardData.tags.indexOf(tag.innerHTML.replace(',', ''));
-
-        cardData.tags.splice(tagIndex, 1);
-        cardStorage.updateCardInStorage(cardData.id, 'tags', cardData.tags)
-        tag.remove();
-    }
-
-    function handleTagSave(tagInput, event, tags, card) {
-        if (event.key == 'Enter') {
-            if (tagInput.value !== '') {
-                var newTag = domUtility.buildNode('span', tagInput.value.replace(',', ''), [
-                    { key: 'class', value: 'tag' }
-                ])
-
-                newTag.addEventListener('click', function() {
-                    handleTagClick(newTag, card.id)
-                })
-
-                tags.appendChild(newTag);
-
-                var updatedTags = Array.from(tags.children)
-                    .map(child => child.innerHTML.replace(/,/, ''))
-                    .slice(1)
-
-                cardStorage.updateCardInStorage(card.id, 'tags', updatedTags)
-                handleSavedDisplay(card)
-            }
-
-            tagInput.remove();
-        }
-    }
-
-    function buildCardTags(currentTags) {
-        var label = domUtility.buildNode('label', '', [
-            { key: 'for', value: 'create-tag' }
-        ])
-        var icon = domUtility.buildIcon('fas fa-tag');
-        var tags = domUtility.buildNode('div', '', [
-            { key: 'class', value: 'tags' }
-        ]);
-
-        label.appendChild(icon)
-        tags.appendChild(label);
-
-        if (currentTags) {
-            currentTags.map(currentTag => {
-                var tagNode = domUtility.buildNode('span', currentTag, [
-                    { key: 'class', value: 'tag' }
-                ])
-
-                tagNode.addEventListener('click', function() {
-                    var card = tags.parentNode
-
-                    handleTagClick(tagNode, card.id)
-                });
-
-                tags.appendChild(tagNode);
-            });
-        }
-
-        label.addEventListener('click', function() {
-            var card = tags.parentNode
-            var newTagInput = domUtility.buildNode('input', '', [
-                { key: 'id', value: 'create-tag' },
-                { key: 'placeholder', value: 'tag name, e.g. GBH' },
-                { key: 'autofocus', value: 'true' }
-            ])
-
-            newTagInput.addEventListener('keyup', function(e) {
-                handleTagSave(this, e, tags, card)
-            });
-
-            card.appendChild(newTagInput)
-        });
-
-        return tags
     }
 
     function generateCard() {
@@ -245,5 +165,6 @@ var card = (function() {
         clearInputs: clearInputs,
         buildNodes: buildNodes,
         generateCard: generateCard,
+        handleSavedDisplay: handleSavedDisplay
     }
 })()
