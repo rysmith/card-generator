@@ -142,8 +142,9 @@ h1 {
     color: green;
 }
 
-#search {
-    margin-bottom: 20px;
+#search-info {
+    min-height: 40px;
+    font-size: 11px;
 }
 
 #placeholder {

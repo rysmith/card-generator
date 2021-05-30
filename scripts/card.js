@@ -213,11 +213,12 @@ var card = (function() {
         removeCard.addEventListener('click', function() {
             this.parentNode.remove();
             cardStorage.removeCardFromStorage(this.parentNode.id)
-            var storageKey = 'card-storage';
-            var currentCards = JSON.parse(localStorage.getItem(storageKey));
 
-            if (currentCards.length === 0) {
-                placeholder.build();
+            if (!document.querySelector('.card')) {
+                placeholder.build(
+                    'No cards matched your search. Remember only tags are searchable.',
+                    'fas fa-search-minus fa-7x'
+                );
             }
         })
 

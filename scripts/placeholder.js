@@ -1,25 +1,42 @@
 var placeholder = (function() {
     var placeholderId = 'placeholder';
-    var defaultText = 'Currently there are no cards.  Try creating one by clicking the green "Generate Card" button above.';
 
-    function build(text) {
-        var cardsNode = document.getElementById('cards');
-        var placeholder = document.getElementById(placeholderId);
-        var placeholderText = text || defaultText
+    function buildDefaults() {
+        var header = domUtility.buildNode('h3', 'Currently there are no cards.')
+        var content = domUtility.buildNode('p', 'Try creating one by clicking the green "Generate Card" button above.')
+        var icon = domUtility.buildIcon('far fa-file fa-7x')
 
-        if (!placeholder) {
-            var newPlaceholder = domUtility.buildNode('div', placeholderText, [
-                { key: 'id', value: placeholderId }
-            ]);
+        return [icon, header, content]
+    }
 
-            cardsNode.appendChild(newPlaceholder);
+    function build(text, iconStyle) {
+        var currentPlaceholder = document.getElementById(placeholderId);
+
+        if (!currentPlaceholder) {
+            var cards = document.getElementById('cards');
+            var newPlaceholder = buildDefaults();
+            if (text) {
+                newPlaceholder = [
+                    domUtility.buildIcon(iconStyle),
+                    domUtility.buildNode('p', text)
+                ];
+            }
+            var wrapper = domUtility.buildNode('div', '', [{
+                key: 'id',
+                value: placeholderId
+            }])
+
+            domUtility.appendChildren(wrapper, newPlaceholder);
+
+            cards.appendChild(wrapper)
         }
     }
 
     function remove() {
-        var placeholder = document.getElementById(placeholderId);
-        if (placeholder) {
-            placeholder.remove();
+        var currentPlaceholder = document.getElementById(placeholderId);
+
+        if (currentPlaceholder) {
+            currentPlaceholder.remove();
         }
     }
 
