@@ -34,7 +34,7 @@ var search = (function() {
         searchInfo.appendChild(currentSearchNode);
 
         setTimeout(function() {
-            removeSearchInfoDisplay(searchInfo)
+            currentSearchNode.remove();
         }, removeAfter);
     }
 
@@ -63,7 +63,7 @@ var search = (function() {
 
         button.addEventListener('click', function() {
             card.buildCardNodes();
-            search.removeSearchInfoDisplay();
+            removeSearchInfoDisplay();
             getSearchInput().value = ''
         })
 
