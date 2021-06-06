@@ -68,7 +68,7 @@ var card = (function() {
         cards.appendChild(newCard);
     }
 
-    function buildCardNodes(cardsData, placeholderText) {
+    function buildCardNodes(cardsData, placeHolderType = null) {
         var cards = cardsData || cardStorage.getCards();
 
         if (cards && cards.length !== 0) {
@@ -84,8 +84,10 @@ var card = (function() {
                 );
             });
         } else {
-            placeholder.build(...placeholderText);
+            placeholder.build(placeHolderType);
         }
+
+        return cards.length;
     }
 
     function generateCard() {
@@ -161,23 +163,21 @@ var card = (function() {
             this.parentNode.remove();
             cardStorage.removeCardFromStorage(this.parentNode.id)
             var cardsInStorage = cardStorage.getCards();
-            var cardsDiplayed = document.getElementsByClassName(cardClass);
+            var cardsDiplayed = document.getElementsByClassName(cardClass) || [];
 
-            if (!cardsDiplayed && cardsInStorage.length > 0) {
-                placeholder.build(
-                    'No cards matched your search. Remember only tags are searchable.',
-                    'fas fa-search-minus fa-7x'
-                );
+            if (cardsDiplayed.length === 0 && cardsInStorage.length > 0) {
+                var placeHolderType = 'notFound'
+
+                placeholder.build(placeHolderType);
             }
 
-            if (!cardsDiplayed && cardsInStorage.length === 0) {
+            if (cardsDiplayed.length === 0 && cardsInStorage.length === 0) {
                 placeholder.build();
                 var search = document.getElementById('search');
                 var searchInfo = document.getElementById('search-info');
 
                 clearInputs([search]);
                 Array.from(searchInfo.children).forEach(child => child.remove());
-
             }
         })
 

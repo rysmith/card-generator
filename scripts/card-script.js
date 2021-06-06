@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     addEnterSubmitListener();
-    search.addHandler();
+    search.addInputHandler();
     card.buildCardNodes();
     card.clearInputs([document.getElementById('search')])
-
 });
 
 function addEnterSubmitListener() {

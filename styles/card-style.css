@@ -1,7 +1,3 @@
-.inputs>label {
-    display: block;
-}
-
 body,
 button,
 input {
@@ -25,10 +21,23 @@ input {
     margin: 20px;
     background-color: lightgreen;
     height: 40px;
+    cursor: pointer;
+}
+
+#search-submit {
+    cursor: pointer;
+}
+
+#search {
+    min-width: 300px;
 }
 
 .inputs,
 h1 {
+    text-align: center;
+}
+
+.search-wrapper {
     text-align: center;
 }
 
@@ -139,11 +148,24 @@ h1 {
 }
 
 #search-info {
-    min-height: 40px;
     font-size: 11px;
-    margin-left: 20px;
+    min-height: 30px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#search-info>span {
+    background-color: lightyellow;
+    padding: 10px;
+    margin: 10px;
 }
 
 #placeholder {
     text-align: center;
+    margin: 20px;
+}
+
+hr {
+    border: 1px dotted slategrey;
+    margin: 20px;
 }

@@ -31,10 +31,14 @@
         <input type='text' id='image-url' placeholder='random by default'>
         <br>
         <input class='generate' type='button' onclick='card.generateCard()' value='Generate Card'>
-        <label for='search'><h2>Search</h2></label>
-        <input type='text' id='search' placeholder='search cards via tags, e.g. GBH'>
     </div>
-    <div id='search-info'></div>
+    <hr>
+    <div class='search-wrapper'>
+        <div id='search-info'></div>
+        <label for='search'><i class='fas fa-search'></i></label>
+        <input type='text' id='search' placeholder='search cards via tags, e.g. GBH'>
+        <input type='button' id='search-submit' onclick='search.buttonClickHandler()' value='Search'>
+    </div>
     <div id='cards'></div>
 
     <script src='scripts/domUtility.js'></script>

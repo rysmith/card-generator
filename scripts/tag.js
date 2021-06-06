@@ -9,14 +9,16 @@ var tag = (function() {
             { key: 'class', value: tagClass }
         ])
 
-        tagNode.addEventListener('click', function() {
-            card.removeCarsFromDisplay();
-            search.removeSearchInfoDisplay();
-            card.buildCardNodes();
-            card.clearInputs([search.getSearchInput()])
-        });
+        tagNode.addEventListener('click', handleSearchTagClick);
 
         return tagNode;
+    }
+
+    function handleSearchTagClick() {
+        card.removeCarsFromDisplay();
+        search.removeSearchInfoDisplay();
+        card.buildCardNodes();
+        card.clearInputs([search.getSearchInput()])
     }
 
     function buildTag(tags, content) {
@@ -50,26 +52,24 @@ var tag = (function() {
             currentTags.map(tagContent => buildTag(tags, tagContent))
         }
 
-        label.addEventListener('click', function() {
-            handleLabelClick(tags)
-        });
+        label.addEventListener('click', handleLabelClick(tags));
 
         return tags
     }
 
     function handleLabelClick(tags) {
-        var card = tags.parentNode
-        var newTagInput = domUtility.buildNode('input', '', [
-            { key: 'id', value: tagInputId },
-            { key: 'placeholder', value: 'tag name, e.g. GBH' },
-            { key: 'autofocus', value: 'true' }
-        ])
+        return function() {
+            var cardNode = tags.parentNode
+            var newTagInput = domUtility.buildNode('input', '', [
+                { key: 'id', value: tagInputId },
+                { key: 'placeholder', value: 'tag name, e.g. GBH' },
+                { key: 'autofocus', value: 'true' }
+            ])
 
-        newTagInput.addEventListener('keyup', function(e) {
-            handleTagSave(this, e, tags, card)
-        });
+            newTagInput.addEventListener('keyup', handleTagSave(newTagInput, tags, cardNode));
 
-        card.appendChild(newTagInput)
+            cardNode.appendChild(newTagInput)
+        }
     }
 
     function handleTagClick(tag, cardId) {
@@ -80,30 +80,32 @@ var tag = (function() {
         cardStorage.updateCardInStorage(cardData.id, tagStorageKey, cardData.tags)
     }
 
+    function handleTagSave(tagInput, tags, cardNode) {
+        return function(event) {
+            if (event.key == 'Enter') {
+                if (tagInput.value !== '') {
+                    var newTag = domUtility.buildNode('span', tagInput.value.replace(',', ''), [
+                        { key: 'class', value: tagClass }
+                    ])
 
-    function handleTagSave(tagInput, event, tags, cardNode) {
-        if (event.key == 'Enter') {
-            if (tagInput.value !== '') {
-                var newTag = domUtility.buildNode('span', tagInput.value.replace(',', ''), [
-                    { key: 'class', value: tagClass }
-                ])
+                    newTag.addEventListener('click', function() {
+                        handleTagClick(this, cardNode.id);
+                        this.remove();
+                        card.handleSavedDisplay(cardNode)
+                    })
 
-                newTag.addEventListener('click', function() {
-                    handleTagClick(this, cardNode.id);
-                    this.remove();
-                })
+                    tags.appendChild(newTag);
 
-                tags.appendChild(newTag);
+                    var updatedTags = Array.from(tags.children)
+                        .map(child => child.innerHTML.replace(/,/, ''))
+                        .slice(1)
 
-                var updatedTags = Array.from(tags.children)
-                    .map(child => child.innerHTML.replace(/,/, ''))
-                    .slice(1)
+                    cardStorage.updateCardInStorage(cardNode.id, tagStorageKey, updatedTags)
+                    card.handleSavedDisplay(cardNode)
+                }
 
-                cardStorage.updateCardInStorage(cardNode.id, tagStorageKey, updatedTags)
-                card.handleSavedDisplay(cardNode)
+                tagInput.remove();
             }
-
-            tagInput.remove();
         }
     }
 
