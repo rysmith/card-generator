@@ -1,4 +1,6 @@
 var search = (function() {
+    'use strict'
+
     function getSearchInfo() {
         return document.getElementById('search-info')
     }
@@ -11,7 +13,6 @@ var search = (function() {
         var searchInfo = searchInfo.children || getSearchInfo().children;
 
         Array.from(searchInfo).forEach(child => child.remove());
-
     }
 
     function displayAllCardsWithWarning() {
@@ -48,9 +49,25 @@ var search = (function() {
         var currentSearchNode = domUtility.buildNode('span', currentSearchText);
         var currentSearchTag = tag.buildCurrentSearchTag(searchInputValue);
 
-        currentSearchNode.appendChild(currentSearchTag);
+
+        domUtility.appendChildren(currentSearchNode, [
+            currentSearchTag,
+            buildClearSearchButton()
+        ]);
 
         getSearchInfo().appendChild(currentSearchNode)
+    }
+
+    function buildClearSearchButton() {
+        var button = domUtility.buildNode('button', 'Clear Search');
+
+        button.addEventListener('click', function() {
+            card.buildCardNodes();
+            search.removeSearchInfoDisplay();
+            getSearchInput().value = ''
+        })
+
+        return button
     }
 
     function handleSearch() {
@@ -81,6 +98,7 @@ var search = (function() {
     }
 
     return {
+        buildClearSearchButton: buildClearSearchButton,
         addInputHandler: addInputHandler,
         handleSearch: handleSearch,
         getSearchInput: getSearchInput,

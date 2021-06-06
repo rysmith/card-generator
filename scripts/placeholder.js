@@ -1,20 +1,23 @@
 var placeholder = (function() {
+    'use strict'
+
     var placeholderId = 'placeholder';
 
     function buildDefaults() {
-        var header = domUtility.buildNode('h3', 'Currently there are no cards.')
-        var content = domUtility.buildNode('p', 'Try creating one by clicking the green "Generate Card" button above.')
-        var icon = domUtility.buildIcon('far fa-file fa-7x')
+        var header = domUtility.buildNode('h3', 'Currently there are no cards.');
+        var content = domUtility.buildNode('p', 'Try creating one by clicking the green "Generate Card" button above.');
+        var icon = domUtility.buildIcon('far fa-file fa-7x');
 
         return [icon, header, content]
     }
 
     function buildNotFound() {
-        var header = domUtility.buildNode('h3', 'No cards matched your search')
-        var content = domUtility.buildNode('p', 'Remember only tags are searchable.')
-        var icon = domUtility.buildIcon('fas fa-search-minus fa-7x')
+        var header = domUtility.buildNode('h3', 'No cards matched your search');
+        var content = domUtility.buildNode('p', 'Remember only tags are searchable.');
+        var icon = domUtility.buildIcon('fas fa-search-minus fa-7x');
+        var button = search.buildClearSearchButton();
 
-        return [icon, header, content]
+        return [icon, header, content, button]
     }
 
     function build(type = null) {

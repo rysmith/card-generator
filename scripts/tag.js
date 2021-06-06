@@ -1,4 +1,6 @@
 var tag = (function() {
+    'use strict'
+
     var tagClass = 'tag';
     var tagsClass = 'tags';
     var tagInputId = 'create-tag';

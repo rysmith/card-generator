@@ -1,14 +1,16 @@
 var cardStorage = (function() {
+    'use strict'
+
     var storageKey = 'card-storage';
 
-    function sortByTitle(a, b) {
-        var cardA = a.name.toUpperCase();
-        var cardB = b.name.toUpperCase();
+    function sortByTitle(cardA, cardB) {
+        var titleA = cardA.name.toLowerCase();
+        var titleB = cardB.name.toLowerCase();
 
-        if (cardA < cardB) {
+        if (titleA < titleB) {
             return -1;
         }
-        if (cardA > cardB) {
+        if (titleA > titleB) {
             return 1;
         }
 

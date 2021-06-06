@@ -1,4 +1,6 @@
 var card = (function() {
+    'use strict'
+
     var cardClass = 'card';
     var cardsId = 'cards';
 
