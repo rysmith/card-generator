@@ -61,16 +61,19 @@ var tag = (function() {
 
     function handleLabelClick(tags) {
         return function() {
-            var cardNode = tags.parentNode
-            var newTagInput = domUtility.buildNode('input', '', [
-                { key: 'id', value: tagInputId },
-                { key: 'placeholder', value: 'tag name, e.g. GBH' },
-                { key: 'autofocus', value: 'true' }
-            ])
+            var cardNode = tags.parentNode;
+            var currentInput = cardNode.querySelector('#create-tag');
+            if (!currentInput) {
+                var newTagInput = domUtility.buildNode('input', '', [
+                    { key: 'id', value: tagInputId },
+                    { key: 'placeholder', value: 'tag name, e.g. GBH' },
+                    { key: 'autofocus', value: 'true' }
+                ])
 
-            newTagInput.addEventListener('keyup', handleTagSave(newTagInput, tags, cardNode));
+                newTagInput.addEventListener('keyup', handleTagSave(newTagInput, tags, cardNode));
 
-            cardNode.appendChild(newTagInput)
+                cardNode.appendChild(newTagInput)
+            }
         }
     }
 
