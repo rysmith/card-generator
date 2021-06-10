@@ -62,8 +62,9 @@ var search = (function() {
         var button = domUtility.buildNode('button', 'Clear Search');
 
         button.addEventListener('click', function() {
-            card.buildCardNodes();
+            card.removeCarsFromDisplay();
             removeSearchInfoDisplay();
+            card.buildCardNodes();
             getSearchInput().value = ''
         })
 
