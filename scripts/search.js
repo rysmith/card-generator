@@ -42,10 +42,11 @@ var search = (function() {
         var cards = cardStorage.getCards(cardData => {
             return cardData.tags && cardData.tags.includes(searchInputValue)
         });
+        var cardCount = cards.length;
 
         card.buildCardNodes(cards, 'notFound')
 
-        var currentSearchText = ' Currently filtering tags by: ';
+        var currentSearchText = ' Currently filtering ' + cardCount + ' tags by: ';
         var currentSearchNode = domUtility.buildNode('span', currentSearchText);
         var currentSearchTag = tag.buildCurrentSearchTag(searchInputValue);
 
