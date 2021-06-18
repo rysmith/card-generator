@@ -1,4 +1,7 @@
+#!/bin/bash
+
 echo '🦆 Deploying to s3://r4an.com...'
+
 aws s3 cp cards.html s3://r4an.com --acl public-read
 aws s3 cp styles/card-style.css s3://r4an.com/styles/ --acl public-read
 aws s3 cp styles/print.css s3://r4an.com/styles/ --acl public-read
