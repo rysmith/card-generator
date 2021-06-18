@@ -4,8 +4,7 @@ var card = (function() {
     var cardClass = 'card';
     var cardsId = 'cards';
 
-    function handleNotSavedDisplay() {
-        var cardNode = this.parentNode
+    function handleNotSavedDisplay(cardNode) {
         var existingStatus = cardNode.getElementsByClassName('not_saved');
 
         Array.from(existingStatus).forEach(status => status.remove());
@@ -18,6 +17,33 @@ var card = (function() {
 
         saveStatus.appendChild(saveIcon)
         cardNode.appendChild(saveStatus)
+    }
+
+    function handelSaveErrorDisplay(card) {
+        var existingNotSavedStatus = card.getElementsByClassName('not_saved');
+        var existingSavedStatus = card.getElementsByClassName('saved');
+
+        Array.from(existingNotSavedStatus).forEach(status => status.remove());
+        Array.from(existingSavedStatus).forEach(status => status.remove());
+
+        var saveStatus = domUtility.buildNode('div', '', [
+            { key: 'class', value: 'save-error' }
+        ]);
+
+        var saveErrorMessage = domUtility.buildNode('span', '⚠️  image url cannot be blank', [{
+            key: 'class',
+            value: 'save-error-message'
+        }])
+
+        saveStatus.appendChild(saveErrorMessage)
+        card.appendChild(saveStatus);
+
+        setTimeout(function() {
+            var savedStatus = card.querySelector('.save-error');
+
+            savedStatus.remove();
+            handleNotSavedDisplay(card)
+        }, 2000);
     }
 
     function handleSavedDisplay(card) {
@@ -62,7 +88,7 @@ var card = (function() {
         domUtility.appendChildren(newCard, [
             tag.buildTags(tags),
             buildCardTitle(title),
-            buildCardArtWork(imageUrl),
+            cardArtwork.build(imageUrl),
             buildCardContent(content),
             buildRemoveCard()
         ])
@@ -123,7 +149,7 @@ var card = (function() {
         ]);
 
         node.addEventListener('focus', function() {
-            handleNotSavedDisplay.call(this)
+            handleNotSavedDisplay(this.parentNode);
         });
 
         node.addEventListener('blur', function() {
@@ -133,13 +159,6 @@ var card = (function() {
         return node;
     }
 
-    function buildCardArtWork(imageUrl) {
-        return domUtility.buildNode('img', '', [
-            { key: 'src', value: imageUrl },
-            { key: 'class', value: 'artwork' },
-        ]);
-    }
-
     function buildCardContent(content) {
         var node = domUtility.buildNode('div', content, [
             { key: 'class', value: 'content' },
@@ -147,7 +166,7 @@ var card = (function() {
         ]);
 
         node.addEventListener('focus', function() {
-            handleNotSavedDisplay.call(this)
+            handleNotSavedDisplay(this.parentNode)
         });
 
         node.addEventListener('blur', function() {
@@ -196,6 +215,8 @@ var card = (function() {
         buildNodes: buildNodes,
         buildCardNodes: buildCardNodes,
         generateCard: generateCard,
-        handleSavedDisplay: handleSavedDisplay
+        handleSavedDisplay: handleSavedDisplay,
+        handleNotSavedDisplay: handleNotSavedDisplay,
+        handelSaveErrorDisplay: handelSaveErrorDisplay
     }
 })()

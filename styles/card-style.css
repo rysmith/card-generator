@@ -83,12 +83,65 @@ h1 {
     color: green;
 }
 
-.artwork {
+.save-error-message {
+    color: black;
+    font-size: 11px;
+}
+
+.save-error {
+    position: absolute;
+    top: -20px;
+    left: 0;
+    color: yellow;
+}
+
+.artwork-wrapper {
+    position: relative;
     border: 5px solid darkslategray;
+    border-radius: 5px;
     margin: 5px;
     width: 200px;
     height: 150px;
-    border-radius: 5px;
+}
+
+.artwork-wrapper:hover {
+    border: 5px solid green;
+}
+
+.artwork {
+    cursor: pointer;
+    width: 200px;
+    height: 150px;
+}
+
+#artwork-input {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 185px;
+}
+
+.reset-artwork-random,
+.reset-artwork-save,
+.reset-artwork-cancel {
+    position: absolute;
+    top: 30px;
+    font-size: 8px;
+}
+
+.reset-artwork-random {
+    right: 8px;
+    background-color: yellow;
+}
+
+.reset-artwork-save {
+    right: 53px;
+    background-color: lightgreen;
+}
+
+.reset-artwork-cancel {
+    left: 5px;
+    background-color: red;
 }
 
 .content {
