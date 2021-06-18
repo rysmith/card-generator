@@ -78,21 +78,11 @@ var cardStorage = (function() {
         localStorage.setItem(storageKey, JSON.stringify(updatedCards));
     }
 
-    function removeCardsFromStorage() {
-        localStorage.removeItem(storageKey);
-        var cards = document.getElementById('cards');
-
-        Array.from(cards.getElementsByClassName('card')).forEach(card => card.remove());
-
-        placeholder.build();
-    }
-
     return {
         getCards: getCards,
         getCardById: getCardById,
         saveCardToStorage: saveCardToStorage,
         removeCardFromStorage: removeCardFromStorage,
-        removeCardsFromStorage: removeCardsFromStorage,
         updateCardInStorage: updateCardInStorage
     }
 })();

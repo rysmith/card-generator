@@ -51,8 +51,6 @@ var cardArtwork = (function() {
     }
 
     function handleArtworkClick(wrapper) {
-
-
         if (!wrapper.querySelector('#artwork-input')) {
             var cardNode = wrapper.parentNode;
 
