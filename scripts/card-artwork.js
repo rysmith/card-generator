@@ -1,130 +1,135 @@
 var cardArtwork = (function() {
     'use strict'
 
-    function removeArtworkInput(input, random, save, cancel) {
-        input.remove();
-        random.remove();
-        save.remove();
-        cancel.remove();
+    function removeArtworkUpdate(cardNode) {
+        cardNode.querySelector('.artwork-update').remove();
     }
 
-    function handleArtworkUpdate(cardNode, wrapper) {
-        return function(event) {
-            var artwork = wrapper.querySelector('.artwork');
-            var input = wrapper.querySelector('#artwork-input');
-            var randomButton = wrapper.querySelector('.reset-artwork-random');
-            var saveButton = wrapper.querySelector('.reset-artwork-save');
-            var cancelButton = wrapper.querySelector('.reset-artwork-cancel');
-
-            if (event.target === input && input.value != '' && event.key == 'Enter') {
-                artwork.src = input.value
-                cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', input.value);
-                cardMessage.handleSavedDisplay(cardNode);
-
-                removeArtworkInput(input, randomButton, saveButton, cancelButton);
-            }
-
-            if (input.value != '' && event.target === saveButton) {
-                artwork.src = input.value
-                cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', input.value);
-                cardMessage.handleSavedDisplay(cardNode);
-
-                removeArtworkInput(input, randomButton, saveButton, cancelButton);
-            }
-
-            if (event.target === randomButton) {
-                var randomImageUrl = 'https://picsum.photos/200/150?random=' + Math.random();
-                artwork.src = randomImageUrl
-                cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', randomImageUrl);
-                cardMessage.removeCurrentMessage(cardNode);
-                cardMessage.handleSavedDisplay(cardNode);
-
-                removeArtworkInput(input, randomButton, saveButton, cancelButton);
-            }
-
-            if (input.value === '' && event.target != randomButton && event.target != cancelButton) {
-                cardMessage.handelSaveErrorDisplay(cardNode)
-            }
-
-            if (event.target === cancelButton) {
-                removeArtworkInput(input, randomButton, saveButton, cancelButton);
-                cardMessage.removeCurrentMessage(cardNode);
-            }
-        }
-    }
-
-    function buildInput(cardNode, wrapper) {
+    function buildInput(cardNode) {
         var inputNode = domUtility.buildNode('input', '', [
             { key: 'id', value: 'artwork-input' },
             { key: 'placeholder', value: 'enter new image url' },
             { key: 'autofocus', value: 'true' }
         ]);
 
-        inputNode.addEventListener('keyup', handleArtworkUpdate(cardNode, wrapper));
+        inputNode.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                var newUrl = inputNode.value;
+
+                if (newUrl != '') {
+                    var artwork = cardNode.querySelector('.artwork');
+
+                    artwork.src = input.value
+                    cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', newUrl);
+                    cardMessage.handleSavedDisplay(cardNode);
+                    removeArtworkUpdate(cardNode);
+                } else {
+                    cardMessage.handelSaveErrorDisplay(cardNode);
+                }
+            }
+
+        });
+
         inputNode.addEventListener('focus', function() {
             cardMessage.handleNotSavedDisplay(cardNode)
         });
 
-        return inputNode
+        return inputNode;
     }
 
-    function buildRandomButton(cardNode, wrapper) {
+    function buildRandomButton(cardNode) {
         var randomButton = domUtility.buildNode('button', 'random', [{
             key: 'class',
             value: 'reset-artwork-random'
         }]);
 
-        randomButton.addEventListener('click', handleArtworkUpdate(cardNode, wrapper));
+        randomButton.addEventListener('click', function() {
+            var randomImageUrl = 'https://picsum.photos/200/150?random=' + Math.random();
+            var artwork = cardNode.querySelector('.artwork');
+
+            artwork.src = randomImageUrl;
+            cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', randomImageUrl);
+            cardMessage.removeCurrentMessage(cardNode);
+            cardMessage.handleSavedDisplay(cardNode);
+            removeArtworkUpdate(cardNode);
+        });
+
 
         return randomButton;
     }
 
-    function buildSaveButton(cardNode, wrapper) {
+    function buildSaveButton(cardNode, input) {
         var saveButton = domUtility.buildNode('button', 'save', [{
             key: 'class',
             value: 'reset-artwork-save'
         }]);
 
-        saveButton.addEventListener('click', handleArtworkUpdate(cardNode, wrapper));
+        saveButton.addEventListener('click', function() {
+            var newUrl = input.value;
+
+            if (newUrl != '') {
+                var artwork = cardNode.querySelector('.artwork');
+
+                artwork.src = newUrl;
+                cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', newUrl);
+                cardMessage.handleSavedDisplay(cardNode);
+                removeArtworkUpdate(cardNode);
+            } else {
+                cardMessage.handelSaveErrorDisplay(cardNode);
+            }
+
+        });
 
         return saveButton;
     }
 
-    function buildCancelButton(cardNode, wrapper) {
+    function buildCancelButton(cardNode) {
         var cancelButton = domUtility.buildNode('button', 'cancel', [{
             key: 'class',
             value: 'reset-artwork-cancel'
         }]);
 
-        cancelButton.addEventListener('click', handleArtworkUpdate(cardNode, wrapper));
+        cancelButton.addEventListener('click', function() {
+            removeArtworkUpdate(cardNode);
+            cardMessage.removeCurrentMessage(cardNode);
+        });
 
         return cancelButton;
     }
 
-    function handleArtworkClick(wrapper) {
-        var currentInput = wrapper.querySelector('#artwork-input');
-        var cardNode = wrapper.parentNode;
+    function buildArtworkUpdate(cardNode, artworkWrapper) {
+        var artworkInput = buildInput(cardNode);
+        var artworkUpdate = domUtility.buildNode('div', '', [{
+            key: 'class',
+            value: 'artwork-update'
+        }]);
 
-        if (!currentInput) {
-            cardMessage.handleNotSavedDisplay(cardNode);
-
-            var artworkInput = buildInput(cardNode, wrapper);
-
-            domUtility.appendChildren(wrapper, [
-                artworkInput,
-                buildRandomButton(cardNode, wrapper),
-                buildSaveButton(cardNode, wrapper),
-                buildCancelButton(cardNode, wrapper)
-            ]);
-
-            artworkInput.focus();
-        } else {
-            currentInput.focus();
-            cardMessage.handleNotSavedDisplay(cardNode);
-        }
+        domUtility.appendChildren(artworkUpdate, [
+            artworkInput,
+            buildRandomButton(cardNode),
+            buildSaveButton(cardNode, artworkInput),
+            buildCancelButton(cardNode)
+        ]);
+        artworkWrapper.appendChild(artworkUpdate)
+        artworkInput.focus();
     }
 
-    function build(imageUrl) {
+    function handleArtworkClick(cardNode, artworkWrapper) {
+        return function() {
+            var currentInput = cardNode.querySelector('#artwork-input');
+
+            if (!currentInput) {
+                cardMessage.handleNotSavedDisplay(cardNode);
+                buildArtworkUpdate(cardNode, artworkWrapper);
+            } else {
+                currentInput.focus();
+                cardMessage.handleNotSavedDisplay(cardNode);
+            }
+        }
+
+    }
+
+    function build(imageUrl, cardNode) {
         var wrapper = domUtility.buildNode('div', '', [{
             key: 'class',
             value: 'artwork-wrapper'
@@ -135,10 +140,7 @@ var cardArtwork = (function() {
         ]);
 
         wrapper.appendChild(artwork)
-
-        artwork.addEventListener('click', function() {
-            handleArtworkClick(wrapper);
-        })
+        artwork.addEventListener('click', handleArtworkClick(cardNode, wrapper));
 
         return wrapper
     }

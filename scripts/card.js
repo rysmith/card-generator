@@ -25,7 +25,7 @@ var card = (function() {
         domUtility.appendChildren(newCard, [
             tag.buildTags(tags),
             buildCardTitle(title),
-            cardArtwork.build(imageUrl),
+            cardArtwork.build(imageUrl, newCard),
             buildCardContent(content),
             buildRemoveCard()
         ])
