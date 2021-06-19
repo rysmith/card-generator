@@ -11,6 +11,7 @@ aws s3 cp scripts/card-storage.js s3://r4an.com/scripts/ --acl public-read
 aws s3 cp scripts/placeholder.js s3://r4an.com/scripts/ --acl public-read
 aws s3 cp scripts/tag.js s3://r4an.com/scripts/ --acl public-read
 aws s3 cp scripts/search.js s3://r4an.com/scripts/ --acl public-read
+aws s3 cp scripts/card-message.js s3://r4an.com/scripts/ --acl public-read
 aws s3 cp scripts/card-artwork.js s3://r4an.com/scripts/ --acl public-read
 
 echo '✅ Deploy complete'

@@ -12,43 +12,43 @@ var cardArtwork = (function() {
         return function(event) {
             var artwork = wrapper.querySelector('.artwork');
             var input = wrapper.querySelector('#artwork-input');
-            var random = wrapper.querySelector('.reset-artwork-random');
-            var resetArtworkSave = wrapper.querySelector('.reset-artwork-save');
-            var resetArtworkCancel = wrapper.querySelector('.reset-artwork-cancel');
+            var randomButton = wrapper.querySelector('.reset-artwork-random');
+            var saveButton = wrapper.querySelector('.reset-artwork-save');
+            var cancelButton = wrapper.querySelector('.reset-artwork-cancel');
 
             if (event.target === input && input.value != '' && event.key == 'Enter') {
                 artwork.src = input.value
                 cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', input.value);
-                card.handleSavedDisplay(cardNode);
+                cardMessage.handleSavedDisplay(cardNode);
 
-                removeArtworkInput(input, random, resetArtworkSave, resetArtworkCancel);
+                removeArtworkInput(input, randomButton, saveButton, cancelButton);
             }
 
-            if (input.value != '' && event.target === resetArtworkSave) {
+            if (input.value != '' && event.target === saveButton) {
                 artwork.src = input.value
                 cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', input.value);
-                card.handleSavedDisplay(cardNode);
+                cardMessage.handleSavedDisplay(cardNode);
 
-                removeArtworkInput(input, random, resetArtworkSave, resetArtworkCancel);
+                removeArtworkInput(input, randomButton, saveButton, cancelButton);
             }
 
-            if (event.target === random) {
+            if (event.target === randomButton) {
                 var randomImageUrl = 'https://picsum.photos/200/150?random=' + Math.random();
                 artwork.src = randomImageUrl
                 cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', randomImageUrl);
-                card.handleSavedDisplay(cardNode);
+                cardMessage.removeCurrentMessage(cardNode);
+                cardMessage.handleSavedDisplay(cardNode);
 
-                removeArtworkInput(input, random, resetArtworkSave, resetArtworkCancel);
+                removeArtworkInput(input, randomButton, saveButton, cancelButton);
             }
 
-            if (input.value === '' && event.target != random && event.target != resetArtworkCancel) {
-                card.handelSaveErrorDisplay(cardNode)
+            if (input.value === '' && event.target != randomButton && event.target != cancelButton) {
+                cardMessage.handelSaveErrorDisplay(cardNode)
             }
 
-            if (event.target === resetArtworkCancel) {
-                removeArtworkInput(input, random, resetArtworkSave, resetArtworkCancel);
-                // need a wrapper around this status area
-                cardNode.querySelector('.not_saved').remove();
+            if (event.target === cancelButton) {
+                removeArtworkInput(input, randomButton, saveButton, cancelButton);
+                cardMessage.removeCurrentMessage(cardNode);
             }
         }
     }
@@ -61,6 +61,9 @@ var cardArtwork = (function() {
         ]);
 
         inputNode.addEventListener('keyup', handleArtworkUpdate(cardNode, wrapper));
+        inputNode.addEventListener('focus', function() {
+            cardMessage.handleNotSavedDisplay(cardNode)
+        });
 
         return inputNode
     }
@@ -99,10 +102,11 @@ var cardArtwork = (function() {
     }
 
     function handleArtworkClick(wrapper) {
-        if (!wrapper.querySelector('#artwork-input')) {
-            var cardNode = wrapper.parentNode;
+        var currentInput = wrapper.querySelector('#artwork-input');
+        var cardNode = wrapper.parentNode;
 
-            handleNotSavedDisplay(cardNode);
+        if (!currentInput) {
+            cardMessage.handleNotSavedDisplay(cardNode);
 
             var artworkInput = buildInput(cardNode, wrapper);
 
@@ -114,6 +118,9 @@ var cardArtwork = (function() {
             ]);
 
             artworkInput.focus();
+        } else {
+            currentInput.focus();
+            cardMessage.handleNotSavedDisplay(cardNode);
         }
     }
 

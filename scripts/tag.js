@@ -96,7 +96,7 @@ var tag = (function() {
                     newTag.addEventListener('click', function() {
                         handleTagClick(this, cardNode.id);
                         this.remove();
-                        card.handleSavedDisplay(cardNode)
+                        cardMessage.handleSavedDisplay(cardNode)
                     })
 
                     tags.appendChild(newTag);
@@ -106,7 +106,7 @@ var tag = (function() {
                         .slice(1)
 
                     cardStorage.updateCardInStorage(cardNode.id, tagStorageKey, updatedTags)
-                    card.handleSavedDisplay(cardNode)
+                    cardMessage.handleSavedDisplay(cardNode)
                 }
 
                 tagInput.remove();
