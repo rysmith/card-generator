@@ -16,7 +16,7 @@ var search = (function() {
     }
 
     function displayAllCardsWithWarning() {
-        var cardsBuilt = card.buildCardNodes();
+        var cardsBuilt = card.buildCards();
 
         var searchInfo = getSearchInfo();
         var searchNodeText;
@@ -45,7 +45,7 @@ var search = (function() {
         var cardCount = cards.length;
         var tagDisplay = cards.length === 1 ? 'tag' : 'tags'
 
-        card.buildCardNodes(cards, 'notFound')
+        card.buildCards(cards, 'notFound')
 
         var currentSearchText = `Currently filtering ${cardCount} ${tagDisplay} by:`;
         var currentSearchNode = domUtility.buildNode('span', currentSearchText);
@@ -66,7 +66,7 @@ var search = (function() {
         button.addEventListener('click', function() {
             card.removeCarsFromDisplay();
             removeSearchInfoDisplay();
-            card.buildCardNodes();
+            card.buildCards();
             getSearchInput().value = ''
         })
 

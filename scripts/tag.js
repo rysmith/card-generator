@@ -19,7 +19,7 @@ var tag = (function() {
     function handleSearchTagClick() {
         card.removeCarsFromDisplay();
         search.removeSearchInfoDisplay();
-        card.buildCardNodes();
+        card.buildCards();
         card.clearInputs([search.getSearchInput()])
     }
 

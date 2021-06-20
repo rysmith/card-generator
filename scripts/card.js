@@ -3,6 +3,9 @@ var card = (function() {
 
     var cardClass = 'card';
     var cardsId = 'cards';
+    var inputNameId = '#name';
+    var inputContentId = '#content';
+    var inputImageUrlId = '#image-url';
 
     function handleCardSave(fieldName) {
         var card = this.parentNode;
@@ -18,9 +21,12 @@ var card = (function() {
         Array.from(cards).forEach(card => card.remove());
     }
 
-    function buildNodes(id, title, content, imageUrl, tags) {
+    function buildCard(id, title, content, imageUrl, tags) {
         var cards = document.getElementById(cardsId);
-        var newCard = buildCard(id);
+        var newCard = domUtility.buildNode('div', '', [
+            { key: 'class', value: cardClass },
+            { key: 'id', value: id }
+        ]);;
 
         domUtility.appendChildren(newCard, [
             tag.buildTags(tags),
@@ -33,14 +39,14 @@ var card = (function() {
         cards.appendChild(newCard);
     }
 
-    function buildCardNodes(cardsData, placeHolderType = null) {
+    function buildCards(cardsData, placeHolderType = null) {
         var cards = cardsData || cardStorage.getCards();
 
         if (cards && cards.length !== 0) {
             placeholder.remove();
 
             cards.forEach(function(item) {
-                card.buildNodes(
+                buildCard(
                     item.id,
                     item.name,
                     item.content,
@@ -55,28 +61,20 @@ var card = (function() {
         return cards.length;
     }
 
-    function generateCard() {
-        var name = document.getElementById('name');
-        var content = document.getElementById('content');
-        var image = document.getElementById('image-url');
-        var imageUrl = image.value
-        var cardId = generateCardId();
+    function buildNewCard() {
+        var name = document.querySelector(inputNameId);
+        var content = document.querySelector(inputContentId);
+        var image = document.querySelector(inputImageUrlId);
+        var id = cardId();
 
-        buildNodes(cardId, name.value, content.value, imageUrl, []);
-        cardStorage.saveCardToStorage(cardId, name.value, content.value, imageUrl);
+        buildCard(id, name.value, content.value, image.value, []);
+        cardStorage.saveCardToStorage(id, name.value, content.value, image.value);
         clearInputs([name, content, image]);
         placeholder.remove();
     }
 
-    function generateCardId() {
-        return 'card-' + Date.now() + '-' + Math.random().toString().split('.')[1]
-    }
-
-    function buildCard(id) {
-        return domUtility.buildNode('div', '', [
-            { key: 'class', value: cardClass },
-            { key: 'id', value: id }
-        ]);
+    function cardId() {
+        return `card-${Date.now()}-${Math.random().toString().split('.')[1]}`
     }
 
     function buildCardTitle(title) {
@@ -120,13 +118,12 @@ var card = (function() {
         removeCard.addEventListener('click', function() {
             this.parentNode.remove();
             cardStorage.removeCardFromStorage(this.parentNode.id)
+
             var cardsInStorage = cardStorage.getCards();
             var cardsDiplayed = document.getElementsByClassName(cardClass) || [];
 
             if (cardsDiplayed.length === 0 && cardsInStorage.length > 0) {
-                var placeHolderType = 'notFound'
-
-                placeholder.build(placeHolderType);
+                placeholder.build('notFound');
             }
 
             if (cardsDiplayed.length === 0 && cardsInStorage.length === 0) {
@@ -149,8 +146,8 @@ var card = (function() {
     return {
         removeCarsFromDisplay: removeCarsFromDisplay,
         clearInputs: clearInputs,
-        buildNodes: buildNodes,
-        buildCardNodes: buildCardNodes,
-        generateCard: generateCard,
+        buildCard: buildCard,
+        buildCards: buildCards,
+        buildNewCard: buildNewCard,
     }
 })()
