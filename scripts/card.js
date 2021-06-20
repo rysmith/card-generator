@@ -59,7 +59,7 @@ var card = (function() {
         var name = document.getElementById('name');
         var content = document.getElementById('content');
         var image = document.getElementById('image-url');
-        var imageUrl = image.value || 'https://picsum.photos/200/150?random=' + Math.random();
+        var imageUrl = image.value
         var cardId = generateCardId();
 
         buildNodes(cardId, name.value, content.value, imageUrl, []);

@@ -39,7 +39,7 @@ var cardMessage = (function() {
         ]);
 
         cardNode.appendChild(newMessage);
-        console.warn(`🦉 ${cardNode.id} cannot save with a blank src attribute`)
+        console.warn(`🦉 ${cardNode.id} cannot save with a blank src attribute on .artwork selector`)
 
         setTimeout(function() {
             removeCurrentMessage(cardNode, saveErrorClass);

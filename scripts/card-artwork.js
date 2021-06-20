@@ -9,6 +9,7 @@ var cardArtwork = (function() {
         saveButton: 'reset-artwork-save',
         cancelButton: 'reset-artwork-cancel'
     }
+    var randomImageUrlBase = 'https://picsum.photos/200/150?random=';
 
     function styleAttribute(attribute) {
         return styleAttributes[attribute]
@@ -61,8 +62,8 @@ var cardArtwork = (function() {
         }]);
 
         randomButton.addEventListener('click', function() {
-            var randomImageUrl = 'https://picsum.photos/200/150?random=' + Math.random();
             var artwork = cardNode.querySelector(styleSelector('image'));
+            var randomImageUrl = `${randomImageUrlBase}${Math.random()}`
 
             artwork.src = randomImageUrl;
             cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', randomImageUrl);
@@ -147,12 +148,13 @@ var cardArtwork = (function() {
     }
 
     function build(imageUrl, cardNode) {
+        var src = imageUrl || `${randomImageUrlBase}${Math.random()}`
         var wrapper = domUtility.buildNode('div', '', [{
             key: 'class',
             value: 'artwork-wrapper'
         }]);
         var artwork = domUtility.buildNode('img', '', [
-            { key: 'src', value: imageUrl },
+            { key: 'src', value: src },
             { key: 'class', value: 'artwork' }
         ]);
 

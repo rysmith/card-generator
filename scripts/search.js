@@ -43,10 +43,11 @@ var search = (function() {
             return cardData.tags && cardData.tags.includes(searchInputValue)
         });
         var cardCount = cards.length;
+        var tagDisplay = cards.length === 1 ? 'tag' : 'tags'
 
         card.buildCardNodes(cards, 'notFound')
 
-        var currentSearchText = ' Currently filtering ' + cardCount + ' tags by: ';
+        var currentSearchText = `Currently filtering ${cardCount} ${tagDisplay} by:`;
         var currentSearchNode = domUtility.buildNode('span', currentSearchText);
         var currentSearchTag = tag.buildCurrentSearchTag(searchInputValue);
 
