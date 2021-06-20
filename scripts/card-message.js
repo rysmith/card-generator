@@ -19,7 +19,7 @@ var cardMessage = (function() {
         }
     }
 
-    function handleNotSavedDisplay(cardNode) {
+    function buildNotSaved(cardNode) {
         removeCurrentMessage(cardNode);
 
         var newMessage = domUtility.buildNode('div', '', [
@@ -30,7 +30,7 @@ var cardMessage = (function() {
         cardNode.appendChild(newMessage);
     }
 
-    function handelSaveErrorDisplay(cardNode) {
+    function buildSaveError(cardNode) {
         removeCurrentMessage(cardNode);
 
         var newMessageText = '⚠️  image url cannot be blank';
@@ -39,14 +39,15 @@ var cardMessage = (function() {
         ]);
 
         cardNode.appendChild(newMessage);
+        console.warn(`🦉 ${cardNode.id} cannot save with a blank src attribute`)
 
         setTimeout(function() {
             removeCurrentMessage(cardNode, saveErrorClass);
-            handleNotSavedDisplay(cardNode);
+            buildNotSaved(cardNode);
         }, msUntilExpiration);
     }
 
-    function handleSavedDisplay(cardNode) {
+    function buildSaved(cardNode) {
         removeCurrentMessage(cardNode, notSavedClass)
 
         var newMessage = domUtility.buildNode('div', '', [
@@ -63,9 +64,9 @@ var cardMessage = (function() {
 
 
     return {
-        handleNotSavedDisplay: handleNotSavedDisplay,
-        handleSavedDisplay: handleSavedDisplay,
-        handelSaveErrorDisplay: handelSaveErrorDisplay,
+        buildNotSaved: buildNotSaved,
+        buildSaved: buildSaved,
+        buildSaveError: buildSaveError,
         removeCurrentMessage: removeCurrentMessage
     }
 })();

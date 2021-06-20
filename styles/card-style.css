@@ -107,7 +107,7 @@ h1 {
     height: 150px;
 }
 
-#artwork-input {
+.artwork-input {
     position: absolute;
     top: 2px;
     left: 2px;

@@ -1,13 +1,30 @@
 var cardArtwork = (function() {
     'use strict'
 
+    var styleAttributes = {
+        image: 'artwork',
+        wrapper: 'artwork-update',
+        input: 'artwork-input',
+        randomButton: 'reset-artwork-random',
+        saveButton: 'reset-artwork-save',
+        cancelButton: 'reset-artwork-cancel'
+    }
+
+    function styleAttribute(attribute) {
+        return styleAttributes[attribute]
+    }
+
+    function styleSelector(attribute) {
+        return `.${styleAttribute(attribute)}`
+    }
+
     function removeArtworkUpdate(cardNode) {
-        cardNode.querySelector('.artwork-update').remove();
+        cardNode.querySelector(styleSelector('wrapper')).remove();
     }
 
     function buildInput(cardNode) {
         var inputNode = domUtility.buildNode('input', '', [
-            { key: 'id', value: 'artwork-input' },
+            { key: 'class', value: styleAttribute('input') },
             { key: 'placeholder', value: 'enter new image url' },
             { key: 'autofocus', value: 'true' }
         ]);
@@ -17,21 +34,21 @@ var cardArtwork = (function() {
                 var newUrl = inputNode.value;
 
                 if (newUrl != '') {
-                    var artwork = cardNode.querySelector('.artwork');
+                    var artwork = cardNode.querySelector(styleAttribute('image'));
 
                     artwork.src = input.value
                     cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', newUrl);
-                    cardMessage.handleSavedDisplay(cardNode);
+                    cardMessage.buildSaved(cardNode);
                     removeArtworkUpdate(cardNode);
                 } else {
-                    cardMessage.handelSaveErrorDisplay(cardNode);
+                    cardMessage.buildSaveError(cardNode);
                 }
             }
 
         });
 
         inputNode.addEventListener('focus', function() {
-            cardMessage.handleNotSavedDisplay(cardNode)
+            cardMessage.buildNotSaved(cardNode)
         });
 
         return inputNode;
@@ -40,17 +57,17 @@ var cardArtwork = (function() {
     function buildRandomButton(cardNode) {
         var randomButton = domUtility.buildNode('button', 'random', [{
             key: 'class',
-            value: 'reset-artwork-random'
+            value: styleAttribute('randomButton')
         }]);
 
         randomButton.addEventListener('click', function() {
             var randomImageUrl = 'https://picsum.photos/200/150?random=' + Math.random();
-            var artwork = cardNode.querySelector('.artwork');
+            var artwork = cardNode.querySelector(styleSelector('image'));
 
             artwork.src = randomImageUrl;
             cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', randomImageUrl);
             cardMessage.removeCurrentMessage(cardNode);
-            cardMessage.handleSavedDisplay(cardNode);
+            cardMessage.buildSaved(cardNode);
             removeArtworkUpdate(cardNode);
         });
 
@@ -61,21 +78,21 @@ var cardArtwork = (function() {
     function buildSaveButton(cardNode, input) {
         var saveButton = domUtility.buildNode('button', 'save', [{
             key: 'class',
-            value: 'reset-artwork-save'
+            value: styleAttribute('saveButton')
         }]);
 
         saveButton.addEventListener('click', function() {
             var newUrl = input.value;
 
             if (newUrl != '') {
-                var artwork = cardNode.querySelector('.artwork');
+                var artwork = cardNode.querySelector(styleSelector('image'));
 
                 artwork.src = newUrl;
                 cardStorage.updateCardInStorage(cardNode.id, 'imageUrl', newUrl);
-                cardMessage.handleSavedDisplay(cardNode);
+                cardMessage.buildSaved(cardNode);
                 removeArtworkUpdate(cardNode);
             } else {
-                cardMessage.handelSaveErrorDisplay(cardNode);
+                cardMessage.buildSaveError(cardNode);
             }
 
         });
@@ -86,7 +103,7 @@ var cardArtwork = (function() {
     function buildCancelButton(cardNode) {
         var cancelButton = domUtility.buildNode('button', 'cancel', [{
             key: 'class',
-            value: 'reset-artwork-cancel'
+            value: styleAttribute('cancelButton')
         }]);
 
         cancelButton.addEventListener('click', function() {
@@ -101,7 +118,7 @@ var cardArtwork = (function() {
         var artworkInput = buildInput(cardNode);
         var artworkUpdate = domUtility.buildNode('div', '', [{
             key: 'class',
-            value: 'artwork-update'
+            value: styleAttribute('wrapper')
         }]);
 
         domUtility.appendChildren(artworkUpdate, [
@@ -116,14 +133,14 @@ var cardArtwork = (function() {
 
     function handleArtworkClick(cardNode, artworkWrapper) {
         return function() {
-            var currentInput = cardNode.querySelector('#artwork-input');
+            var currentInput = cardNode.querySelector(styleSelector('input'));
 
             if (!currentInput) {
-                cardMessage.handleNotSavedDisplay(cardNode);
                 buildArtworkUpdate(cardNode, artworkWrapper);
+                cardMessage.buildNotSaved(cardNode);
             } else {
                 currentInput.focus();
-                cardMessage.handleNotSavedDisplay(cardNode);
+                cardMessage.buildNotSaved(cardNode);
             }
         }
 

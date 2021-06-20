@@ -9,7 +9,7 @@ var card = (function() {
         var value = this.innerHTML;
 
         cardStorage.updateCardInStorage(card.id, fieldName, value)
-        cardMessage.handleSavedDisplay(card)
+        cardMessage.buildSaved(card)
     }
 
     function removeCarsFromDisplay() {
@@ -86,7 +86,7 @@ var card = (function() {
         ]);
 
         node.addEventListener('focus', function() {
-            cardMessage.handleNotSavedDisplay(this.parentNode);
+            cardMessage.buildNotSaved(this.parentNode);
         });
 
         node.addEventListener('blur', function() {
@@ -103,7 +103,7 @@ var card = (function() {
         ]);
 
         node.addEventListener('focus', function() {
-            cardMessage.handleNotSavedDisplay(this.parentNode)
+            cardMessage.buildNotSaved(this.parentNode)
         });
 
         node.addEventListener('blur', function() {
